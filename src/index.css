@@ -1,0 +1,47 @@
+.navbar {
+  max-width: 220px;
+  min-height: 100vh !important;
+  background-color: rgba(30, 39, 44);
+  align-items: initial !important;
+}
+
+.navbar>.container{
+  justify-content: initial !important;
+}
+
+.rounded-circle{
+  width: 220px;
+}
+
+.navbar-text{
+  letter-spacing: 0.6rem;
+  margin-bottom: 30px;
+}
+
+.underline{
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-link:hover, .nav-link.active{
+  color: skyblue !important;
+}
+
+.container{
+  max-width: calc(100vw - 250px - 60px) !important;
+}
+
+.resize-content{
+  margin: 30px 30px 30px 250px !important;
+}
+
+.form{
+  width: 40vw;
+  margin: 10vh auto;
+  background-color: rgba(135, 206, 235, 0.5);
+  border-radius: 10px;
+}
+
+.form-label{
+  font-weight: bold;
+  width: 100%;
+}
