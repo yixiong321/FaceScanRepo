@@ -20,7 +20,6 @@ const renderEntry =(entry,index)=>{
             <Button variant="danger" size="sm">
             <MdDeleteForever></MdDeleteForever>
             </Button>
-            
             </td>
 
             
@@ -35,8 +34,8 @@ export const LabGrpsTable=(props)=>{
             <thead>
                 <tr>
                     {Object.keys(props.data[0]).map(
-                        key=>{return <th key={key}>{key}</th>})}
-                    <th>Actions</th>
+                        key=>{return <th key={key}>{key.toUpperCase()}</th>})}
+                    <th>ACTIONS</th>
                 </tr>
             </thead>
             <tbody>

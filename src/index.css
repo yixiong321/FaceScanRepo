@@ -45,3 +45,12 @@
   font-weight: bold;
   width: 100%;
 }
+.tabsSystem>.nav-link:hover{
+  background-color: rgba(30, 39, 44); 
+}
+.tabsSystem>.nav-link.active{
+  background-color: rgba(30, 39, 44) !important;
+}
+.containerTable{
+  background-color:white;
+}
