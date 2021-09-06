@@ -1,51 +1,72 @@
-import {Button,Container,Tabs,Tab,Card,Form} from "react-bootstrap" ;
+import { MDBCardHeader, MDBCheckbox, MDBContainer } from 'mdb-react-ui-kit';
 import Groups from "../data/groups";
 import { LabGrpsTable } from "./LabGroupTable";
 import { HistoryTable } from "./historyTable.";
 import history from "../data/History";
 import { NamelistTable } from "./Namelist";
 import students from "../data/students";
+import React, { useState } from 'react';
+import {
+  MDBTabs,
+  MDBTabsItem,
+  MDBTabsLink,
+  MDBTabsContent,
+  MDBTabsPane,
+  MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBBtn
+} from 'mdb-react-ui-kit';
 
-export const DashboardTabs = () => {
-    return (
-        <Card variant="light" border="dark" className="cardy">
-            <Tabs variant="pills"  defaultActiveKey="Lab Groups" id="dashboardTabs" className="mb-3 px-2 tabsSystem">
-                <Tab eventKey="Lab Groups" title="Lab Groups">       
-                    <Container className="containerTable">
-                        <LabGrpsTable data={Groups}></LabGrpsTable>
-                    </Container>
-                </Tab>
-                <Tab eventKey="View Attendence History" title="View Attendence History">
-                    <Container className="containerTable">
-                        <Form>
-                            {['checkbox'].map((type) => (
-                                <div key={`default-${type}`} className="mb-3">
-                                <h5>Filter By:</h5>
-                                <Form.Check 
-                                    type={type}
-                                    id={`default-${type}`}
-                                    label="Lab Group"
-                                    inline
-                                />
-                                <Form.Check
-                                    type={type}
-                                    label="Date"
-                                    id={`default ${type} 1`}
-                                    inline
-                                />
-                                </div>
-                            ))}
-                        </Form>
-                        <HistoryTable data={history}></HistoryTable>
-                    </Container>
-                </Tab>
-                <Tab eventKey="student" title="student">       
-                    <Container className="containerTable">
-                        <NamelistTable data={students}></NamelistTable>
-                    </Container>
-                </Tab>
-            </Tabs>
-        </Card>
+export default function TabsSYS() {
+  const [basicActive, setBasicActive] = useState('tab1');
 
-    )
+  const handleBasicClick = (value) => {
+    if (value === basicActive) {
+      return;
+    }
+
+    setBasicActive(value);
+  };
+
+  return (
+    <MDBCard className='shadow-5-strong' >
+      <MDBTabs className='mb-3'>
+        <MDBTabsItem>
+          <MDBTabsLink className="tabsys" onClick={() => handleBasicClick('tab1')} active={basicActive === 'tab1'}>
+            Lab Groups
+          </MDBTabsLink>
+        </MDBTabsItem>
+        <MDBTabsItem>
+          <MDBTabsLink className="tabsys" onClick={() => handleBasicClick('tab2')} active={basicActive === 'tab2'}>
+            View Attendance History
+          </MDBTabsLink>
+        </MDBTabsItem>
+        <MDBTabsItem>
+          <MDBTabsLink className="tabsys" onClick={() => handleBasicClick('tab3')} active={basicActive === 'tab3'}>
+            Students(test)
+          </MDBTabsLink>
+        </MDBTabsItem>
+      </MDBTabs>
+   
+      <MDBTabsContent>
+        <MDBTabsPane show={basicActive === 'tab1'}>
+            <MDBContainer>
+                <LabGrpsTable data={Groups}></LabGrpsTable>
+            </MDBContainer>
+        </MDBTabsPane>
+        <MDBTabsPane show={basicActive === 'tab2'}>
+            <MDBContainer>
+                <h4>Filters:</h4>
+                <MDBCheckbox inline name='flexCheck' value='' id='LabGrpCheckbox' label='Lab Group' />
+                <MDBCheckbox inline name='flexCheck' value='' id='DateCheckbox' label='Date (Oldest to Latest)' />
+                <HistoryTable data={history}></HistoryTable>
+            </MDBContainer>
+        </MDBTabsPane>
+        <MDBTabsPane show={basicActive === 'tab3'}>
+            <MDBContainer>
+                <NamelistTable data={students}></NamelistTable>
+            </MDBContainer>
+        </MDBTabsPane>
+      </MDBTabsContent>
+     
+    </MDBCard>
+  );
 }

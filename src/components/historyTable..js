@@ -1,16 +1,16 @@
-import Table from 'react-bootstrap/Table'
-import Button from 'react-bootstrap/Button'
-import {AiFillFolderOpen} from "react-icons/ai"
 
+import {AiFillFolderOpen} from "react-icons/ai"
+import { MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
+import { MDBBtn } from 'mdb-react-ui-kit';
 const renderHistory =(history,index)=>{
     return (
         <tr key={index}>
             <td>{history.date}</td>
             <td>{history.lab_group}</td>  
             <td>
-            <Button variant="info" size="sm">
+            <MDBBtn  color="info" size="sm">
                 <AiFillFolderOpen></AiFillFolderOpen>
-                </Button>{' '}
+                </MDBBtn >
             </td>          
         </tr>
 
@@ -19,17 +19,17 @@ const renderHistory =(history,index)=>{
 
 export const HistoryTable=(props)=>{
     return (
-        <Table responsive hover >
-            <thead>
+        <MDBTable responsive hover >
+            <MDBTableHead>
                 <tr>
                     {Object.keys(props.data[0]).map(
                         key=>{return <th key={key}>{key.toUpperCase()}</th>})}
                     <th>ACTIONS</th>
                 </tr>
-            </thead>
-            <tbody>
+            </MDBTableHead>
+            <MDBTableBody>
                 {props.data.map(renderHistory)}
-            </tbody>
-        </Table>
+            </MDBTableBody>
+        </MDBTable>
     )
 }

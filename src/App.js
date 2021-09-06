@@ -7,6 +7,7 @@ import CreateTAPage from './components/CreateTAPage';
 import RegisterStudentPage from './components/RegisterStudentPage';
 import { Col, Row } from 'react-bootstrap';
 import {Container} from 'react-bootstrap';
+import 'mdb-react-ui-kit/dist/css/mdb.min.css'
 
 function App() {
 

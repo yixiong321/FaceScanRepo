@@ -1,4 +1,6 @@
-import Table from 'react-bootstrap/Table'
+
+import { MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
+import { MDBBtn } from 'mdb-react-ui-kit';
 
 
 const renderStudents =(Student,index)=>{
@@ -7,7 +9,7 @@ const renderStudents =(Student,index)=>{
             <td>{Student.name}</td>
             <td>{Student.matric_number}</td>  
             <td>
-            <select name="attendence" >
+            <select name="attendance" >
             <option value="Present">Present</option>
             <option value="Absent">Absent</option>
             <option value="Absent with Valid Reason">Absent with Valid Reason</option>
@@ -20,17 +22,17 @@ const renderStudents =(Student,index)=>{
 
 export const NamelistTable=(props)=>{
     return (
-        <Table responsive hover >
-            <thead>
+        <MDBTable responsive hover >
+            <MDBTableHead>
                 <tr>
                     {Object.keys(props.data[0]).map(
                         key=>{return <th key={key}>{key.toUpperCase()}</th>})}
                     <th>ACTIONS</th>
                 </tr>
-            </thead>
-            <tbody>
+            </MDBTableHead>
+            <MDBTableBody>
                 {props.data.map(renderStudents)}
-            </tbody>
-        </Table>
+            </MDBTableBody>
+        </MDBTable>
     )
 }

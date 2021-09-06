@@ -1,7 +1,7 @@
-import Table from 'react-bootstrap/Table'
-import groups from '../data/groups'
-import Button from 'react-bootstrap/Button'
+
 import { MdDeleteForever,MdModeEdit,MdAddToPhotos} from "react-icons/md";
+import { MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
+import { MDBBtn } from 'mdb-react-ui-kit';
 
 const renderEntry =(entry,index)=>{
     return (
@@ -11,15 +11,15 @@ const renderEntry =(entry,index)=>{
             <td>{entry.index}</td>
             <td>{entry.lab_group}</td>
             <td>
-            <Button variant="primary" size="sm">
+            <MDBBtn color="primary" size="sm">
                 <MdAddToPhotos></MdAddToPhotos>
-                </Button>{' '}
-            <Button variant="secondary" size="sm">
+                </MDBBtn>{' '}
+            <MDBBtn color="secondary" size="sm">
                 <MdModeEdit></MdModeEdit>
-                </Button>{' '}
-            <Button variant="danger" size="sm">
+                </MDBBtn>{' '}
+            <MDBBtn color="danger" size="sm">
             <MdDeleteForever></MdDeleteForever>
-            </Button>
+            </MDBBtn>
             </td>
 
             
@@ -30,17 +30,17 @@ const renderEntry =(entry,index)=>{
 
 export const LabGrpsTable=(props)=>{
     return (
-        <Table responsive hover >
-            <thead>
+        <MDBTable responsive hover >
+            <MDBTableHead>
                 <tr>
                     {Object.keys(props.data[0]).map(
                         key=>{return <th key={key}>{key.toUpperCase()}</th>})}
                     <th>ACTIONS</th>
                 </tr>
-            </thead>
-            <tbody>
+            </MDBTableHead>
+            <MDBTableBody>
                 {props.data.map(renderEntry)}
-            </tbody>
-        </Table>
+            </MDBTableBody>
+        </MDBTable>
     )
 }
