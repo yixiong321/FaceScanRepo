@@ -51,7 +51,7 @@ const RegisterStudentPage = () => {
   };
 
   return (
-    <Container className="resize-content">
+    <Container>
       <Form className="form p-3" onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="name">
           <Form.Label>Name</Form.Label>

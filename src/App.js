@@ -21,7 +21,7 @@ function App() {
           </Col>
           <Col className="pt-3">
             <Switch>
-              <Route path="/home" component={HomePage} />
+              <Route exact path={["/home", "/"]} component={HomePage} />
               <Route path="/create-ta-account" component={CreateTAPage} />
               <Route path="/register-student" component={RegisterStudentPage} />
           </Switch>
