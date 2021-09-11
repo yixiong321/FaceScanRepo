@@ -53,7 +53,7 @@ const CreateTAPage = (props) => {
   };
 
   return (
-    <Container className="resize-content">
+    <Container>
       <Form className="form p-3" onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="username">
           <Form.Label>Username</Form.Label>
@@ -92,11 +92,13 @@ const CreateTAPage = (props) => {
             isInvalid={!!errors.password}
             aria-describedby="passwordHelpBlock"
           />
+          <div className="mb-2">
           <Form.Text id="passwordHelpBlock" muted>
             Password must consists at least one uppercase letter, one lower case
             letter, one digit, one special character and minimum 8 characters in
             length
           </Form.Text>
+          </div>
           <Form.Control.Feedback type="invalid">
             {errors.password}
           </Form.Control.Feedback>
