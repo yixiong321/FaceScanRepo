@@ -7,7 +7,7 @@ const Sidenav = (props) => {
     <Navbar fixed="top">
       <Container className="flex-column">
         <Navbar.Brand href="/home">
-          <Image src="facescanlogo.png" roundedCircle />
+          <Image src="face-scan-logo.png" className="mb-3"/>
         </Navbar.Brand>
         <Navbar.Text className="text-light">FACESCAN</Navbar.Text>
         <Nav activeKey={location.pathname} defaultActiveKey="/home" className="flex-column">

@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import HomePage from './components/HomePage';
 import CreateTAPage from './components/CreateTAPage';
 import RegisterStudentPage from './components/RegisterStudentPage';
+import ManageStudentProfile from './components/ManageStudentProfile';
 import { Col, Row } from 'react-bootstrap';
 import {Container} from 'react-bootstrap';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css'
@@ -24,6 +25,7 @@ function App() {
               <Route exact path={["/home", "/"]} component={HomePage} />
               <Route path="/create-ta-account" component={CreateTAPage} />
               <Route path="/register-student" component={RegisterStudentPage} />
+              <Route path="/manage-student-profile" component={ManageStudentProfile} />
           </Switch>
           </Col>
         </Row>

@@ -14,7 +14,6 @@ const RegisterStudentPage = () => {
   const [errors, setErrors] = useState({});
 
   const handleChange = (field, value) => {
-      
         setInfo({
             ...info,
             [field]: value,
@@ -28,7 +27,7 @@ const RegisterStudentPage = () => {
   };
 
   const findFormErrors = () => {
-    const { name, matric_number } = info;
+    const { matric_number } = info;
     const newErrors = {};
     // check matric_number in database
 
@@ -92,6 +91,7 @@ const RegisterStudentPage = () => {
           <Form.Label>Lab Group</Form.Label>
           <Form.Control
             as="select"
+            className="form-select"
             required
             onChange={(e) => handleChange("group", e.target.value)}
           >
@@ -104,7 +104,7 @@ const RegisterStudentPage = () => {
             })}
           </Form.Control>
         </Form.Group>
-        <Button variant="primary" type="submit" className="mb-3 w-100">
+        <Button type="submit" className="mb-3 w-100">
           Create Student Profile
         </Button>
       </Form>

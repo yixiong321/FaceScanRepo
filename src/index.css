@@ -1,3 +1,8 @@
+body {
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+}
+
 .navbar {
   max-width: 220px;
   min-height: 100vh !important;
@@ -9,13 +14,14 @@
   justify-content: initial !important;
 }
 
-.rounded-circle{
-  width: 220px;
-}
-
 .navbar-text{
+  font-weight: bold;
   letter-spacing: 0.6rem;
   margin-bottom: 30px;
+}
+
+a.navbar-brand{
+  margin-right: 0px;
 }
 
 .underline{
@@ -28,7 +34,7 @@
 
 .form{
   width: 40vw;
-  margin: 10vh auto;
+  margin: 5vh auto;
   background-color: rgba(135, 206, 235, 0.5);
   border-radius: 10px;
 }
@@ -38,6 +44,12 @@
   width: 100%;
 }
 
-body {
-  font-family: Roboto, Helvetica, Arial, sans-serif;
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.42;
+  border-radius: 15px;
 }

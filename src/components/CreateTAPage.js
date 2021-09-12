@@ -6,6 +6,7 @@ const CreateTAPage = (props) => {
     username: "",
     email: "",
     password: "",
+    confirmPassword: ""
   };
   const [info, setInfo] = useState(initialInfo);
   const [errors, setErrors] = useState({});
@@ -23,7 +24,7 @@ const CreateTAPage = (props) => {
   };
 
   const findFormErrors = () => {
-    const { username, email, password } = info;
+    const { username, email, password, confirmPassword } = info;
     const newErrors = {};
     // check username in database
 
@@ -35,6 +36,9 @@ const CreateTAPage = (props) => {
       )
     ) {
       newErrors.password = "Password does not meet requirements!";
+    }
+    else if(password !== confirmPassword){
+      newErrors.confirmPassword = "Passwords do not match!"
     }
 
     return newErrors;
@@ -54,7 +58,7 @@ const CreateTAPage = (props) => {
 
   return (
     <Container>
-      <Form className="form p-3" onSubmit={handleSubmit}>
+      <Form className="form p-3 mt-3" onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="username">
           <Form.Label>Username</Form.Label>
           <Form.Control
@@ -91,6 +95,7 @@ const CreateTAPage = (props) => {
             onChange={(e) => handleChange("password", e.target.value)}
             isInvalid={!!errors.password}
             aria-describedby="passwordHelpBlock"
+            className="mb-0"
           />
           <div className="mb-2">
           <Form.Text id="passwordHelpBlock" muted>
@@ -103,7 +108,21 @@ const CreateTAPage = (props) => {
             {errors.password}
           </Form.Control.Feedback>
         </Form.Group>
-        <Button variant="primary" type="submit" className="mb-3 w-100">
+        <Form.Group className="mb-3" controlId="confirmPassword">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            type="password"
+            required
+            value={info.confirmPassword}
+            onChange={(e) => handleChange("confirmPassword", e.target.value)}
+            isInvalid={!!errors.confirmPassword}
+            aria-describedby="passwordHelpBlock"
+          />
+          <Form.Control.Feedback type="invalid">
+            {errors.confirmPassword}
+          </Form.Control.Feedback>
+        </Form.Group>
+        <Button variant="primary" type="submit" className="my-3 w-100">
           Create TA Account
         </Button>
       </Form>
