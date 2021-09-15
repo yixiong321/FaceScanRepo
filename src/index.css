@@ -6,7 +6,7 @@ body {
 .navbar {
   max-width: 220px;
   min-height: 100vh !important;
-  background-color: rgba(30, 39, 44);
+  background-color: #85a6de;
   align-items: initial !important;
 }
 
@@ -25,18 +25,36 @@ a.navbar-brand{
 }
 
 .underline{
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255);
 }
 
 .sidenav-color:hover, .sidenav-color.active{
-  color: skyblue !important;
+  color: darkblue !important;
+  font-weight: bold;
 }
 
 .form{
   width: 40vw;
   margin: 5vh auto;
-  background-color: rgba(135, 206, 235, 0.5);
+  background-color: #85a6dea8;
   border-radius: 10px;
+}
+
+.login-page{
+  margin: 0 auto;
+  width: 100vw; 
+  height: 100vh;
+  background-color: #85a6de;
+}
+
+.login-form{
+  width: 40vw;
+  margin: 0 auto;
+}
+
+.login-form h3{
+  letter-spacing: .5rem;
+  font-weight: 300;
 }
 
 .form-label{

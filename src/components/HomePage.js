@@ -1,12 +1,9 @@
-import React from 'react'
-import TabsSYS from './DashboardTabs'
-import {DashboardTabs} from './DashboardTabs'
-const HomePage = () => {
-    return (
-        <div>
-            <TabsSYS></TabsSYS>
-        </div>
-    )
-}
+import React from "react";
+import TabsSYS from "./DashboardTabs";
+import { DashboardTabs } from "./DashboardTabs";
 
-export default HomePage
+const HomePage = () => {
+  return <TabsSYS></TabsSYS>;
+};
+
+export default HomePage;

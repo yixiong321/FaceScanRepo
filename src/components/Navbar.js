@@ -7,13 +7,13 @@ const Sidenav = (props) => {
     <Navbar fixed="top">
       <Container className="flex-column">
         <Navbar.Brand href="/home">
-          <Image src="face-scan-logo.png" className="mb-3"/>
+          <Image src="facescan-logo.jpg" className="mb-3"/>
         </Navbar.Brand>
         <Navbar.Text className="text-light">FACESCAN</Navbar.Text>
         <Nav activeKey={location.pathname} defaultActiveKey="/home" className="flex-column">
           {sidebardata.map((item) => {
             return (
-              <Nav.Link key={item.id} eventKey={item.link} href={item.link} className="text-muted py-0 sidenav-color">
+              <Nav.Link key={item.id} eventKey={item.link} href={item.link} className="text-white py-0 sidenav-color">
                 {item.name}
                 <div className="underline my-3"></div>
               </Nav.Link>

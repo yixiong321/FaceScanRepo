@@ -98,7 +98,7 @@ const CreateTAPage = (props) => {
             className="mb-0"
           />
           <div className="mb-2">
-          <Form.Text id="passwordHelpBlock" muted>
+          <Form.Text id="passwordHelpBlock" className="text-light">
             Password must consists at least one uppercase letter, one lower case
             letter, one digit, one special character and minimum 8 characters in
             length
