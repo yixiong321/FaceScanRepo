@@ -7,6 +7,7 @@ import HomePage from "./components/HomePage";
 import CreateTAPage from "./components/CreateTAPage";
 import RegisterStudentPage from "./components/RegisterStudentPage";
 import ManageStudentProfile from "./components/ManageStudentProfile";
+import AttendanceTaking from "./components/AttendanceTaking";
 import { Col, Row } from "react-bootstrap";
 import { Container } from "react-bootstrap";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
@@ -30,6 +31,7 @@ function App() {
                   path="/manage-student-profile"
                   component={ManageStudentProfile}
                 />
+                <Route path="/session" component={AttendanceTaking}/>
             </Col>
           </Row>
         </Container>)

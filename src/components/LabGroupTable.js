@@ -2,6 +2,7 @@
 import { MdDeleteForever,MdModeEdit,MdAddToPhotos} from "react-icons/md";
 import { MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
 import { MDBBtn } from 'mdb-react-ui-kit';
+import { Link } from 'react-router-dom'
 
 const renderEntry =(entry,index)=>{
     return (
@@ -11,9 +12,11 @@ const renderEntry =(entry,index)=>{
             <td>{entry.index}</td>
             <td>{entry.lab_group}</td>
             <td>
+            <Link to={`session?code=${entry.course_code}&index=${entry.index}&group=${entry.lab_group}`}>
             <MDBBtn color="primary" size="sm">
                 <MdAddToPhotos></MdAddToPhotos>
                 </MDBBtn>{' '}
+            </Link>
             <MDBBtn color="secondary" size="sm">
                 <MdModeEdit></MdModeEdit>
                 </MDBBtn>{' '}

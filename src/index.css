@@ -71,3 +71,10 @@ a.navbar-brand{
   line-height: 1.42;
   border-radius: 15px;
 }
+
+.face-scan{
+  margin-top: 5vh;
+  width: 100vw;
+  height: 70vh;
+  background-color: lightgrey;
+}
