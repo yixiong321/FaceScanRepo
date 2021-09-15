@@ -36,7 +36,6 @@ const ManageStudentProfile = () => {
   };
 
   const handleChange = (field, value) => {
-    console.log(info.picture.type === "image/png")
     setInfo({
       ...info,
       [field]: value,
@@ -54,7 +53,7 @@ const ManageStudentProfile = () => {
     const newErrors = {};
     // check matric_number in database
     const fileType = picture['type']
-    if (fileType === undefined || fileType.split('/')[0] !== "image") {
+    if (fileType !== undefined && fileType.split('/')[0] !== "image") {
       newErrors.picture = "Upload only a .png/.jpg/.jpeg file";
     }
 
@@ -204,7 +203,7 @@ const ManageStudentProfile = () => {
           <Button onClick={handleConfirmDelete}>
             Yes
           </Button>
-          <Button variant="danger" onClick={handleConfirmDelete}>
+          <Button variant="danger" onClick={() => setDeleteProfile(false)}>
             No
           </Button>
         </Modal.Footer>
