@@ -72,9 +72,13 @@ a.navbar-brand{
   border-radius: 15px;
 }
 
-.face-scan{
-  margin-top: 5vh;
-  width: 100vw;
-  height: 70vh;
-  background-color: lightgrey;
+.canvas{
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(75%, 25%);
+}
+
+.modal-content{
+  transform: translateX(30%);
 }
