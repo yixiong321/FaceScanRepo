@@ -39,11 +39,7 @@ export default function TabsSYS() {
             View Attendance History
           </MDBTabsLink>
         </MDBTabsItem>
-        <MDBTabsItem>
-          <MDBTabsLink className="tabsys" onClick={() => handleBasicClick('tab3')} active={basicActive === 'tab3'}>
-            Students(test)
-          </MDBTabsLink>
-        </MDBTabsItem>
+
       </MDBTabs>
    
       <MDBTabsContent>
@@ -54,19 +50,29 @@ export default function TabsSYS() {
         </MDBTabsPane>
         <MDBTabsPane show={basicActive === 'tab2'}>
             <MDBContainer>
-                <h4>Filters:</h4>
-                <MDBCheckbox inline name='flexCheck' value='' id='LabGrpCheckbox' label='Lab Group' />
-                <MDBCheckbox inline name='flexCheck' value='' id='DateCheckbox' label='Date (Oldest to Latest)' />
                 <HistoryTable data={history}></HistoryTable>
             </MDBContainer>
         </MDBTabsPane>
-        <MDBTabsPane show={basicActive === 'tab3'}>
-            <MDBContainer>
-                <NamelistTable data={students}></NamelistTable>
-            </MDBContainer>
-        </MDBTabsPane>
+
       </MDBTabsContent>
      
     </MDBCard>
   );
 }
+
+/*
+                <h4>Filters:</h4>
+                <MDBCheckbox inline name='flexCheck' value='' id='LabGrpCheckbox' label='Lab Group' />
+                <MDBCheckbox inline name='flexCheck' value='' id='DateCheckbox' label='Date (Oldest to Latest)' />
+                
+        <MDBTabsItem>
+          <MDBTabsLink className="tabsys" onClick={() => handleBasicClick('tab3')} active={basicActive === 'tab3'}>
+            Students(test)
+          </MDBTabsLink>
+        </MDBTabsItem>
+        <MDBTabsPane show={basicActive === 'tab3'}>
+            <MDBContainer>
+                <NamelistTable data={students}></NamelistTable>
+            </MDBContainer>
+        </MDBTabsPane>
+*/ 

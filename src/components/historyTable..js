@@ -3,16 +3,20 @@ import React from 'react';
 import { MDBDataTableV5 } from 'mdbreact';
 import { MDBBtn } from 'mdb-react-ui-kit';
 import {AiFillFolderOpen} from "react-icons/ai"
+import { Link } from 'react-router-dom'
 
 const addHistoryButtons=(data)=>{
     data.forEach(function (element) {
-        element.btns = <MDBBtn  color="info" size="sm" >
-                        <AiFillFolderOpen></AiFillFolderOpen>
-                        </MDBBtn >;
+        element.btns = <Link to={`attendance?code=${element}&index=${element}&group=${element}`}>
+        <MDBBtn color="info" size="sm">
+        <AiFillFolderOpen></AiFillFolderOpen>
+        </MDBBtn>
+    </Link>
       });
     return data;
 }
 
+//need to get the data from somewhr
 export const HistoryTable=(props)=> {
   const [datatable, setDatatable] = React.useState({
     columns: [

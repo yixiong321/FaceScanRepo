@@ -8,10 +8,12 @@ import CreateTAPage from "./components/CreateTAPage";
 import RegisterStudentPage from "./components/RegisterStudentPage";
 import ManageStudentProfile from "./components/ManageStudentProfile";
 import AttendanceTaking from "./components/AttendanceTaking";
+import NamelistTable from "./components/Namelist";
 import { Col, Row } from "react-bootstrap";
 import { Container } from "react-bootstrap";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import { useState } from "react";
+import students from "./data/students";
 
 function App() {
   const [isAuthorized, setIsAuthorized] = useState(false)
@@ -32,6 +34,7 @@ function App() {
                   component={ManageStudentProfile}
                 />
                 <Route path="/session" component={AttendanceTaking}/>
+                <Route path="/attendance" component ={()=><NamelistTable data ={students}></NamelistTable>}/>
             </Col>
           </Row>
         </Container>)
