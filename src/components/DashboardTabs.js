@@ -1,7 +1,7 @@
 import { MDBCardHeader, MDBCheckbox, MDBContainer } from 'mdb-react-ui-kit';
 import Groups from "../data/groups";
 import { LabGrpsTable } from "./LabGroupTable";
-import { HistoryTable } from "./historyTable.";
+import { HistoryTable } from "./historyTable";
 import history from "../data/History";
 import { NamelistTable } from "./Namelist";
 import students from "../data/students";
@@ -64,7 +64,7 @@ export default function TabsSYS() {
                 <h4>Filters:</h4>
                 <MDBCheckbox inline name='flexCheck' value='' id='LabGrpCheckbox' label='Lab Group' />
                 <MDBCheckbox inline name='flexCheck' value='' id='DateCheckbox' label='Date (Oldest to Latest)' />
-                
+
         <MDBTabsItem>
           <MDBTabsLink className="tabsys" onClick={() => handleBasicClick('tab3')} active={basicActive === 'tab3'}>
             Students(test)

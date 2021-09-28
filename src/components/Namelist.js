@@ -58,8 +58,8 @@ const NamelistTable=(props)=> {
         entries={20} 
         pagesAmount={4} 
         data={datatable} 
-        //searchTop 
-        searchBottom={true}
+        searchTop 
+        searchBottom={false} 
         />
         <MDBBtn size='sm' onClick={()=>{handleSaveChanges()}}>Save Changes</MDBBtn>
     </MDBCard>)
