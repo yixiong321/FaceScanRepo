@@ -112,14 +112,15 @@ const FaceDetection = () => {
 
   return (
     <div className="">
-      {!camera && <Button onClick={start}>Launch Camera</Button>}
+      {camera ? <Button onClick={() => window.close()}>End Session</Button> : <Button onClick={start}>Launch Camera</Button>}
       <video className="canvas" width="600" height="500" ref={videoRef} />
       <canvas className="canvas" ref={canvasRef} />
       {camera && captured && (
-        <Modal show={captured} centered size="sm">
-          <Modal.Header>
-            <Modal.Body>Face Captured</Modal.Body>
+        <Modal show={captured} centered size="sm" className="face-capture-modal">
+          <Modal.Header className="bg-success text-center font-weight-bold">
+            <Modal.Body className="mt-3">Face Captured</Modal.Body>
           </Modal.Header>
+          <Modal.Footer className="bg-success"></Modal.Footer>
         </Modal>
       )}
       <canvas id="captureCanvas" width="0" height="0"/>

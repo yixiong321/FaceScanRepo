@@ -58,7 +58,8 @@ const CreateTAPage = (props) => {
 
   return (
     <Container>
-      <Form className="form p-3 mt-3" onSubmit={handleSubmit}>
+      <Form className="form my-0 w-75" onSubmit={handleSubmit}>
+        <h1 className="text-center mb-3">Create TA Account</h1>
         <Form.Group className="mb-3" controlId="username">
           <Form.Label>Username</Form.Label>
           <Form.Control
@@ -98,7 +99,7 @@ const CreateTAPage = (props) => {
             className="mb-0"
           />
           <div className="mb-2">
-          <Form.Text id="passwordHelpBlock" className="text-light">
+          <Form.Text id="passwordHelpBlock" className="text-dark">
             Password must consists at least one uppercase letter, one lower case
             letter, one digit, one special character and minimum 8 characters in
             length

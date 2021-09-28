@@ -84,7 +84,8 @@ const ManageStudentProfile = () => {
 
   return (
     <Container>
-      <Form className="form p-3 w-75 mt-3" onSubmit={handleSearch}>
+      <Form className="form my-0 w-75" onSubmit={handleSearch}>
+        <h1 className="text-center mb-4">Manage Student Profile</h1>
         <Form.Group controlId="name" className="d-flex">
           <Form.Control
             autoFocus
@@ -98,7 +99,7 @@ const ManageStudentProfile = () => {
           </Button>
         </Form.Group>
       </Form>
-      <Container className="w-75">
+      <Container className="w-75 mt-3">
         {Object.keys(searchResult).length === 0 ? (
           <Container className="text-center">
             No student profile matched
@@ -196,7 +197,7 @@ const ManageStudentProfile = () => {
         )}
       </Container>
       <Modal show={deleteProfile} onHide={handleConfirmDelete} centered>
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Body>Are you sure you want to delete this student profile?</Modal.Body>
         </Modal.Header>
         <Modal.Footer>

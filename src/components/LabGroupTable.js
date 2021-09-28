@@ -32,7 +32,7 @@ export const LabGrpsTable=(props)=> {
                 }> 
         <MdDeleteForever></MdDeleteForever>
         </MDBBtn></div>
-            :<div><Link to={`session?code=${entry.course_code}&index=${entry.index}&group=${entry.lab_group}`}>
+            :<div><Link to={`session?code=${entry.course_code}&index=${entry.index}&group=${entry.lab_group}`} target="_blank" rel="noopener noreferrer">
                 <MDBBtn color="primary" size="sm">
                 <MdAddToPhotos></MdAddToPhotos>
                 </MDBBtn>{' '}

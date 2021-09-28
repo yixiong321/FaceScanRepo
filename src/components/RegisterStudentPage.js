@@ -51,7 +51,8 @@ const RegisterStudentPage = () => {
 
   return (
     <Container>
-      <Form className="form p-3" onSubmit={handleSubmit}>
+      <Form className="form w-75" onSubmit={handleSubmit}>
+        <h1 className="text-center mb-3">Register Student</h1>
         <Form.Group className="mb-3" controlId="name">
           <Form.Label>Name</Form.Label>
           <Form.Control

@@ -1,3 +1,7 @@
+#root, html{
+  background-color: hsl(218, 57%, 70%, 60%);
+}
+
 body {
   font-family: Roboto, Helvetica, Arial, sans-serif;
   box-sizing: border-box;
@@ -8,6 +12,7 @@ body {
   min-height: 100vh !important;
   background-color: #85a6de;
   align-items: initial !important;
+  padding-right: 0 !important;
 }
 
 .navbar>.container{
@@ -34,10 +39,7 @@ a.navbar-brand{
 }
 
 .form{
-  width: 40vw;
   margin: 5vh auto;
-  background-color: #85a6dea8;
-  border-radius: 10px;
 }
 
 .login-page{
@@ -79,6 +81,16 @@ a.navbar-brand{
   transform: translate(75%, 25%);
 }
 
-.modal-content{
-  transform: translateX(30%);
+.face-capture-modal{
+  transform: translate(10%, 10%);
+}
+
+.face-capture-modal .modal-header {
+  border-bottom: 0 none !important;
+  font-size: 2rem;
+}
+
+.face-capture-modal .modal-footer {
+  margin-top: -1px;
+  border-top: 0 none !important;
 }
