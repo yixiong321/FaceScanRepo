@@ -22,17 +22,18 @@ export const LabGrpsTable = () => {
 
     //adding the btns for the different actions
     const addLabGrpButtons = (data) => {
+        // console.log('here', data, loaded)
           data.forEach(function (entry) {
             entry.actions = (isEditing) ? <div>
                 <MDBBtn color="primary" size="sm" disabled className="tableBtns">
                     New
                 </MDBBtn>{' '}
-                <MDBBtn color="secondary" size="sm" disabled className="tableBtns" value={entry.lab_group}
+                <MDBBtn color="secondary" size="sm" disabled className="tableBtns" value={entry.lab_group_name}
                     onClick={(e) => handleEditLabGrp(e.target.value)} className="tableBtns">
                     Edit
                 </MDBBtn>{' '}
                 <MDBBtn color="danger" size="sm" disabled className="tableBtns"
-                    value={entry.lab_group} onClick={(e) => {
+                    value={entry.lab_group_name} onClick={(e) => {
                         setSelected(e.target.value)
                         setDeleteModal(true)
                     }
@@ -44,11 +45,11 @@ export const LabGrpsTable = () => {
                         New
                     </MDBBtn>{' '}
                 
-                    <MDBBtn color="secondary" className="tableBtns" size="sm" value={entry.lab_group}
+                    <MDBBtn color="secondary" className="tableBtns" size="sm" value={entry.lab_group_name}
                         onClick={(e) => { handleEditLabGrp(e.target.value) }}>
                         Edit
                     </MDBBtn>{' '}
-                    <MDBBtn color="danger" size="sm" className="tableBtns" value={entry.lab_group} onClick={(e) => {
+                    <MDBBtn color="danger" size="sm" className="tableBtns" value={entry.lab_group_name} onClick={(e) => {
                         setSelected(e.target.value)
                         setDeleteModal(true)
                     }
@@ -96,7 +97,6 @@ export const LabGrpsTable = () => {
     });
 
     useEffect(() => {
-        
         const fetchLabGroups = async () => {
           let response1 = await LabGroupDataService.getLabGroups()
           let response2 = await CourseDataService.getCourses()
@@ -113,31 +113,16 @@ export const LabGrpsTable = () => {
               }
             })
           })
-         
-            setLabGroups(prev => [...prev, ...newList])
-            //console.log(labGroups,datatable,loaded)
+          setLabGroups([...newList])
+          setDatatable(prevDatatable => {return {...prevDatatable, rows: addLabGrpButtons([...newList])}})
+          setLoaded(true)
         }
         fetchLabGroups()
-
-      }, [])
-
-      useEffect(() => {
-        setDatatable(prevDatatable => {return {...prevDatatable, rows: addLabGrpButtons([...labGroups])}})
-      }, [labGroups])
-
-      useEffect(() => {
-        setLoaded(true)
-        // console.log(datatable)
-      }, [datatable])
-
-      useEffect(() => {
-        console.log(loaded)
-        console.log(datatable)
-      }, [loaded])
+    }, []);
 
     const handleDeleteLabGrp = (e) => {
         e.preventDefault();
-        var filtered = datatable.rows.filter(function (el) { return el.lab_group != selected; });
+        var filtered = datatable.rows.filter(function (el) { return el.lab_group_name != selected; });
         setDatatable(prevDatatable => { return { ...prevDatatable, rows: filtered } })
         // delete from db need to see the API 
         setDeleteModal(false)
@@ -164,7 +149,7 @@ export const LabGrpsTable = () => {
 
     const handleEditLabGrp = (labGrp) => {
         //find the row and edit the row to the editable format!   
-        let toEditIndex = datatable.rows.findIndex((row) => (row.lab_group == labGrp))
+        let toEditIndex = datatable.rows.findIndex((row) => (row.lab_group_name == labGrp))
         // console.log(datatable.rows[toEditIndex])
         setEditRow({ ...datatable.rows[toEditIndex] })
         setEditIndex(toEditIndex)
@@ -202,7 +187,6 @@ export const LabGrpsTable = () => {
         setEditing(false)
     }
     
-
     return isEditing ? <Container><MDBDataTableV5
         hover
         entriesOptions={[5, 10, 20, 25]}

@@ -1,23 +1,28 @@
 import { Container, Form, Button, Image } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import LoginDataService from '../service/login-http'
 
 const LoginPage = ({ setIsAuthorized }) => {
   let history = useHistory();
   setIsAuthorized(false);
-
-  const initialInfo = {
-    username: "",
-    password: "",
-  };
+  
+  const initialInfo = useMemo(() => {
+    return {
+      username: "",
+      password: "",
+    };
+  }, [])
+  
   const [info, setInfo] = useState(initialInfo);
   const [errors, setErrors] = useState({});
   const [auth, setAuth] = useState(false)
 
   useEffect(() => {
     const fetchToken = async() => {
-      let {data: {refresh, access}} = await LoginDataService.postToken({username: info.username, password: info.password})
+      console.log('login')
+      const {username, password} = info
+      const {data: {refresh, access}} = await LoginDataService.postToken({username, password})
       if(refresh && access){
         window.localStorage.setItem('refresh', refresh)
         window.localStorage.setItem('access', access)
@@ -30,7 +35,7 @@ const LoginPage = ({ setIsAuthorized }) => {
       fetchToken()
       return () => setAuth(false)
     }
-  }, [auth])
+  }, [auth, history, info, initialInfo, setIsAuthorized])
 
   const handleChange = (field, value) => {
     setInfo({
@@ -45,7 +50,7 @@ const LoginPage = ({ setIsAuthorized }) => {
   };
 
   const findFormErrors = () => {
-    const { username, password } = info;
+    // const { username, password } = info;
     const newErrors = {};
     // check username in database
 
