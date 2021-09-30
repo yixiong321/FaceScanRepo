@@ -1,10 +1,8 @@
 
-import { Container, Modal, Form, Button } from 'react-bootstrap';
+import { Container, Modal } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
 import { MDBDataTableV5, MDBInput } from 'mdbreact';
-import { MdDeleteForever, MdModeEdit, MdAddToPhotos } from "react-icons/md";
 import { MDBBtn } from 'mdb-react-ui-kit';
-import { Link } from 'react-router-dom';
 import LabGroupDataService from "../service/lab-group-http"
 import CourseDataService from "../service/course-http"
 
@@ -28,12 +26,12 @@ export const LabGrpsTable = () => {
                 <MDBBtn color="primary" size="sm" disabled className="tableBtns">
                     New
                 </MDBBtn>{' '}
-                <MDBBtn color="secondary" size="sm" disabled className="tableBtns" value={entry.lab_group_name}
+                <MDBBtn color="secondary" size="sm" disabled className="tableBtns" value={entry.lab_group_id}
                     onClick={(e) => handleEditLabGrp(e.target.value)} className="tableBtns">
                     Edit
                 </MDBBtn>{' '}
                 <MDBBtn color="danger" size="sm" disabled className="tableBtns"
-                    value={entry.lab_group_name} onClick={(e) => {
+                    value={entry.lab_group_id} onClick={(e) => {
                         setSelected(e.target.value)
                         setDeleteModal(true)
                     }
@@ -45,11 +43,11 @@ export const LabGrpsTable = () => {
                         New
                     </MDBBtn>{' '}
                 
-                    <MDBBtn color="secondary" className="tableBtns" size="sm" value={entry.lab_group_name}
+                    <MDBBtn color="secondary" className="tableBtns" size="sm" value={entry.lab_group_id}
                         onClick={(e) => { handleEditLabGrp(e.target.value) }}>
                         Edit
                     </MDBBtn>{' '}
-                    <MDBBtn color="danger" size="sm" className="tableBtns" value={entry.lab_group_name} onClick={(e) => {
+                    <MDBBtn color="danger" size="sm" className="tableBtns" value={entry.lab_group_id} onClick={(e) => {
                         setSelected(e.target.value)
                         setDeleteModal(true)
                     }
@@ -122,14 +120,13 @@ export const LabGrpsTable = () => {
 
     const handleDeleteLabGrp = (e) => {
         e.preventDefault();
-        var filtered = datatable.rows.filter(function (el) { return el.lab_group_name != selected; });
+        var filtered = datatable.rows.filter(function (el) { return el.lab_group_id != selected; });
         setDatatable(prevDatatable => { return { ...prevDatatable, rows: filtered } })
         // delete from db need to see the API 
         setDeleteModal(false)
     }
 
     const handleChange = (e, index, key) => {
-        //when the user types sth do wat?
         datatable.rows[index][key] = <MDBInput
             value={e.target.value}
             onChange={(e) => handleChange(e, index, key)}></MDBInput>
@@ -147,9 +144,9 @@ export const LabGrpsTable = () => {
         //encode the variables to the url.
     }
 
-    const handleEditLabGrp = (labGrp) => {
+    const handleEditLabGrp = (labGrpID) => {
         //find the row and edit the row to the editable format!   
-        let toEditIndex = datatable.rows.findIndex((row) => (row.lab_group_name == labGrp))
+        let toEditIndex = datatable.rows.findIndex((row) => (row.lab_group_id== labGrpID))
         // console.log(datatable.rows[toEditIndex])
         setEditRow({ ...datatable.rows[toEditIndex] })
         setEditIndex(toEditIndex)
