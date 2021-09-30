@@ -23,6 +23,7 @@ export const HistoryTable=(props)=> {
       {
         label: 'Date',
         field: 'date',
+        //field:"date_time_start"
         width: 150,
         attributes: {
           'aria-controls': 'DataTable',

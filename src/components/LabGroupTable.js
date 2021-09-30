@@ -4,13 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { MDBDataTableV5, MDBInput } from 'mdbreact';
 import { MdDeleteForever, MdModeEdit, MdAddToPhotos } from "react-icons/md";
 import { MDBBtn } from 'mdb-react-ui-kit';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import LabGroupDataService from "../service/lab-group-http"
+import CourseDataService from "../service/course-http"
 
-
-
-export const LabGrpsTable = (props) => {
+export const LabGrpsTable = () => {
     //// STATES ///
-
     //this is to determine whether to show/hide the confirmation modal
     const [showDeleteModal, setDeleteModal] = useState(false)
     const [selected, setSelected] = useState(null)
@@ -18,10 +17,12 @@ export const LabGrpsTable = (props) => {
     const [editIndex, setEditIndex] = useState(0)
     const [editRow, setEditRow] = useState({})
     const [newRow,setNewRow] = useState({})
+    const [loaded, setLoaded] = useState(false)
+    const [labGroups, setLabGroups] = useState([])
 
     //adding the btns for the different actions
     const addLabGrpButtons = (data) => {
-        data.forEach(function (entry) {
+          data.forEach(function (entry) {
             entry.actions = (isEditing) ? <div>
                 <MDBBtn color="primary" size="sm" disabled className="tableBtns">
                     New
@@ -38,11 +39,11 @@ export const LabGrpsTable = (props) => {
                     }>
                     Del
                 </MDBBtn></div>
-                : <div><Link to={`session?code=${entry.course_code}&index=${entry.index}&group=${entry.lab_group}`} target="_blank" rel="noopener noreferrer">
+                : <div>
                     <MDBBtn color="primary" size="sm" className="tableBtns">
                         New
                     </MDBBtn>{' '}
-                </Link>
+                
                     <MDBBtn color="secondary" className="tableBtns" size="sm" value={entry.lab_group}
                         onClick={(e) => { handleEditLabGrp(e.target.value) }}>
                         Edit
@@ -62,7 +63,7 @@ export const LabGrpsTable = (props) => {
         columns: [
             {
                 label: 'ID',
-                field: 'id',
+                field: 'lab_group_id',
                 width: 150,
                 attributes: {
                     'aria-controls': 'DataTable',
@@ -75,13 +76,13 @@ export const LabGrpsTable = (props) => {
                 width: 150,
             },
             {
-                label: 'Index',
-                field: 'index',
+                label: 'Course Name',
+                field: 'course_name',
                 width: 150,
             },
             {
                 label: 'Lab Group',
-                field: 'lab_group',
+                field: 'lab_group_name',
                 width: 150,
             },
             {
@@ -91,13 +92,48 @@ export const LabGrpsTable = (props) => {
                 sort: 'disabled',
             },
         ],
-        rows: addLabGrpButtons(props.data),
+        rows: addLabGrpButtons(labGroups),
     });
 
-
     useEffect(() => {
-        console.log(newRow)
-    }, [newRow])
+        
+        const fetchLabGroups = async () => {
+          let response1 = await LabGroupDataService.getLabGroups()
+          let response2 = await CourseDataService.getCourses()
+      
+          let newList = []
+      
+          response1.data.forEach(({id , lab_group_name, course}) => {
+            let lab_group_id = id
+            response2.data.forEach(({id, course_code, course_name}) => {
+              let course_id = id
+              if(course_id === course){
+                let newObj = {lab_group_id, course_name, course_code, lab_group_name}
+                newList.push(newObj)
+              }
+            })
+          })
+         
+            setLabGroups(prev => [...prev, ...newList])
+            //console.log(labGroups,datatable,loaded)
+        }
+        fetchLabGroups()
+
+      }, [])
+
+      useEffect(() => {
+        setDatatable(prevDatatable => {return {...prevDatatable, rows: addLabGrpButtons([...labGroups])}})
+      }, [labGroups])
+
+      useEffect(() => {
+        setLoaded(true)
+        // console.log(datatable)
+      }, [datatable])
+
+      useEffect(() => {
+        console.log(loaded)
+        console.log(datatable)
+      }, [loaded])
 
     const handleDeleteLabGrp = (e) => {
         e.preventDefault();
@@ -116,6 +152,14 @@ export const LabGrpsTable = (props) => {
         setNewRow(prevNewRow=>{return {...prevNewRow,[key]:e.target.value} })
         
         setDatatable(prevDatatable => { return { ...prevDatatable, rows: datatable.rows }})
+    }
+
+    const postNewSession = ()=>{
+        return
+        //get the current datetime
+        //id,session_name,date_time_start,date_time_end,lab_group
+        //get the variables and push to the db
+        //encode the variables to the url.
     }
 
     const handleEditLabGrp = (labGrp) => {
@@ -157,6 +201,7 @@ export const LabGrpsTable = (props) => {
         })
         setEditing(false)
     }
+    
 
     return isEditing ? <Container><MDBDataTableV5
         hover
@@ -175,7 +220,7 @@ export const LabGrpsTable = (props) => {
                 Cancel
             </MDBBtn>{' '}
         </div></Container>
-        : <Container><MDBDataTableV5
+        : <Container>{loaded && <MDBDataTableV5
             hover
             entriesOptions={[5, 10, 20, 25]}
             entries={20}
@@ -183,7 +228,7 @@ export const LabGrpsTable = (props) => {
             data={datatable}
             searchTop
             searchBottom={false}
-        />
+        />}
             <Modal show={showDeleteModal} onHide={() => { setDeleteModal(false) }} centered>
                 <Modal.Header closeButton>
                     <Modal.Body>Are you sure you want to delete this Lab Group ({selected})?</Modal.Body>

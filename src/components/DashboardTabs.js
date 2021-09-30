@@ -3,9 +3,8 @@ import Groups from "../data/groups";
 import { LabGrpsTable } from "./LabGroupTable";
 import { HistoryTable } from "./historyTable";
 import history from "../data/History";
-import { NamelistTable } from "./Namelist";
-import students from "../data/students";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
 import {
   MDBTabs,
   MDBTabsItem,
@@ -45,7 +44,7 @@ export default function TabsSYS() {
       <MDBTabsContent>
         <MDBTabsPane show={basicActive === 'tab1'}>
             <MDBContainer>
-                <LabGrpsTable data={Groups}></LabGrpsTable>
+                <LabGrpsTable></LabGrpsTable>
             </MDBContainer>
         </MDBTabsPane>
         <MDBTabsPane show={basicActive === 'tab2'}>

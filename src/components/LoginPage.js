@@ -1,6 +1,7 @@
 import { Container, Form, Button, Image } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import LoginDataService from '../service/login-http'
 
 const LoginPage = ({ setIsAuthorized }) => {
   let history = useHistory();
@@ -12,6 +13,24 @@ const LoginPage = ({ setIsAuthorized }) => {
   };
   const [info, setInfo] = useState(initialInfo);
   const [errors, setErrors] = useState({});
+  const [auth, setAuth] = useState(false)
+
+  useEffect(() => {
+    const fetchToken = async() => {
+      let {data: {refresh, access}} = await LoginDataService.postToken({username: info.username, password: info.password})
+      if(refresh && access){
+        window.localStorage.setItem('refresh', refresh)
+        window.localStorage.setItem('access', access)
+        history.push("/home");
+        setIsAuthorized(true);
+        setInfo(initialInfo);
+      }
+    }
+    if(auth){
+      fetchToken()
+      return () => setAuth(false)
+    }
+  }, [auth])
 
   const handleChange = (field, value) => {
     setInfo({
@@ -41,10 +60,7 @@ const LoginPage = ({ setIsAuthorized }) => {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
-      // send info to server but password needs to be encrypted (use bcrypt)
-      history.push("/home");
-      setIsAuthorized(true);
-      setInfo(initialInfo);
+      setAuth(true)
     }
   };
 
@@ -52,7 +68,7 @@ const LoginPage = ({ setIsAuthorized }) => {
     <div className="login-page">
       <Form className=" login-form p-3" onSubmit={handleSubmit}>
         <Container className="text-center mb-5">
-          <Image src="facescan-logo.jpg" className="mb-4"/>
+          <Image src="facescan-logo.jpg" className="mb-4" />
           <h3 className="text-white">Welcome to FaceScan</h3>
         </Container>
         <Form.Group className="mb-3" controlId="username">
