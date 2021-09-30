@@ -94,3 +94,7 @@ a.navbar-brand{
   margin-top: -1px;
   border-top: 0 none !important;
 }
+
+.tableBtns {
+  width: 60px;
+}
