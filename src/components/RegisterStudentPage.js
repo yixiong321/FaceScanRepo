@@ -1,23 +1,27 @@
 import { Container, Form, Button } from "react-bootstrap";
-import { useState } from "react";
-import groups from "../data/groups";
+import { useState, useEffect } from "react";
+import { useGlobalContext } from "./Context";
+import StudentDataService from "../service/student-http"
 
 const RegisterStudentPage = () => {
-  const firstGroup = groups[0];
+  const { globalLabGroups } = useGlobalContext();
+  let labGroups = globalLabGroups;
+  const { lab_group_id, course_code, course_name, lab_group_name } =
+    labGroups[0];
   const initialInfo = {
     name: "",
     matric_number: "",
     picture: {},
-    group: `${firstGroup.course_code}, ${firstGroup.index}, ${firstGroup.lab_group}`,
+    group: `${lab_group_id}, ${course_code}, ${course_name}, ${lab_group_name}`,
   };
   const [info, setInfo] = useState(initialInfo);
   const [errors, setErrors] = useState({});
 
   const handleChange = (field, value) => {
-        setInfo({
-            ...info,
-            [field]: value,
-          });
+    setInfo({
+      ...info,
+      [field]: value,
+    });
 
     if (!!errors[field])
       setErrors({
@@ -26,12 +30,38 @@ const RegisterStudentPage = () => {
       });
   };
 
-  const findFormErrors = () => {
-    const { matric_number } = info;
+  const findFormErrors = async() => {
+    const { matric_number, picture } = info;
     const newErrors = {};
     // check matric_number in database
+    const response = await checkAccountInDB()
+    if(response === "matric"){
+      newErrors.username = "Matriculation Number already exists!"
+    }
 
+    const fileType = picture['type']
+    if (fileType !== undefined && fileType.split('/')[0] !== "image") {
+      newErrors.picture = "Upload only a .png/.jpg/.jpeg file";
+    }
     return newErrors;
+  };
+
+  const checkAccountInDB = async () => {
+    const { name, matric_number, picture } = info;
+    const formData = new FormData()
+    console.log(picture);
+    // formData.append('picture', picture, picture.name)
+    const data = {
+      name,
+      matric_number,
+      formData,
+    };
+    
+    try {
+      await StudentDataService.postStudent(data);
+    } catch (e) {
+      if (e.response.data.matric) return "matric";
+    }
   };
 
   const handleSubmit = (e) => {
@@ -45,7 +75,7 @@ const RegisterStudentPage = () => {
       // process file
       // send info to server
       setInfo(initialInfo);
-      document.getElementById('picture').value = null
+      document.getElementById("picture").value = null;
     }
   };
 
@@ -96,13 +126,15 @@ const RegisterStudentPage = () => {
             required
             onChange={(e) => handleChange("group", e.target.value)}
           >
-            {groups.map((group) => {
-              return (
-                <option key={group.id}>
-                  {`${group.course_code}, ${group.index}, ${group.lab_group}`}
-                </option>
-              );
-            })}
+            {labGroups.map(
+              ({ lab_group_id, course_code, course_name, lab_group_name }) => {
+                return (
+                  <option key={lab_group_id}>
+                    {`${lab_group_id}, ${course_code}, ${course_name}, ${lab_group_name}`}
+                  </option>
+                );
+              }
+            )}
           </Form.Control>
         </Form.Group>
         <Button type="submit" className="mb-3 w-100">

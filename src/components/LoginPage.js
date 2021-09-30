@@ -20,7 +20,6 @@ const LoginPage = ({ setIsAuthorized }) => {
 
   useEffect(() => {
     const fetchToken = async() => {
-      console.log('login')
       const {username, password} = info
       const {data: {refresh, access}} = await LoginDataService.postToken({username, password})
       if(refresh && access){

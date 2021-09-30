@@ -1,5 +1,4 @@
 import { MDBCardHeader, MDBCheckbox, MDBContainer } from 'mdb-react-ui-kit';
-import Groups from "../data/groups";
 import { LabGrpsTable } from "./LabGroupTable";
 import { HistoryTable } from "./historyTable";
 import history from "../data/History";

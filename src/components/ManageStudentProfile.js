@@ -1,7 +1,6 @@
 import { Container, Form, Button, Row, Col, Image, Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import students from "../data/students";
-import groups from "../data/groups";
 
 const ManageStudentProfile = () => {
   const [searchText, setSearchText] = useState("");
@@ -178,13 +177,13 @@ const ManageStudentProfile = () => {
                       value={info.group || ""}
                       onChange={(e) => handleChange("group", e.target.value)}
                     >
-                      {groups.map((group) => {
+                      {/* {groups.map((group) => {
                         return (
                           <option key={group.id}>
                             {`${group.course_code}, ${group.index}, ${group.lab_group}`}
                           </option>
                         );
-                      })}
+                      })} */}
                     </Form.Control>
                   </Form.Group>
                   <Button type="submit" onClick={handleSave}>

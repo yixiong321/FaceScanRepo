@@ -1,12 +1,13 @@
 import { Container, Form, Button } from "react-bootstrap";
 import { useState } from "react";
+import TADataService from "../service/ta-http";
 
 const CreateTAPage = (props) => {
   const initialInfo = {
     username: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   };
   const [info, setInfo] = useState(initialInfo);
   const [errors, setErrors] = useState({});
@@ -23,12 +24,15 @@ const CreateTAPage = (props) => {
       });
   };
 
-  const findFormErrors = () => {
-    const { username, email, password, confirmPassword } = info;
+  const findFormErrors = async() => {
+    const { password, confirmPassword } = info;
     const newErrors = {};
     // check username in database
-
-    // check email in database
+    // check email in database (not checked)
+    const response = await checkAccountInDB()
+    if(response === "username"){
+      newErrors.username = "Username already exists!"
+    }
 
     if (
       !password.match(
@@ -36,17 +40,31 @@ const CreateTAPage = (props) => {
       )
     ) {
       newErrors.password = "Password does not meet requirements!";
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match!";
     }
-    else if(password !== confirmPassword){
-      newErrors.confirmPassword = "Passwords do not match!"
-    }
-
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const checkAccountInDB = async () => {
+    const { username, password, email } = info;
+    const data = {
+      is_superuser: "false",
+      username,
+      password,
+      email,
+    };
+    try{
+      await TADataService.postTA(data);
+    }
+    catch(e){
+        if(e.response.data.username) return "username"
+    }
+  };
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    const newErrors = findFormErrors();
+    const newErrors = await findFormErrors();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
@@ -60,7 +78,7 @@ const CreateTAPage = (props) => {
     <Container>
       <Form className="form my-0 w-75" onSubmit={handleSubmit}>
         <h1 className="text-center mb-3">Create TA Account</h1>
-        <Form.Group className="mb-3" controlId="username">
+        <Form.Group className="mb-4" controlId="username">
           <Form.Label>Username</Form.Label>
           <Form.Control
             autoFocus
@@ -74,7 +92,7 @@ const CreateTAPage = (props) => {
             {errors.username}
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group className="mb-3" controlId="email">
+        <Form.Group className="mb-4" controlId="email">
           <Form.Label>Email</Form.Label>
           <Form.Control
             type="email"
@@ -87,7 +105,7 @@ const CreateTAPage = (props) => {
             {errors.email}
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group className="mb-3" controlId="password">
+        <Form.Group className="mb-4" controlId="password">
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
@@ -99,17 +117,17 @@ const CreateTAPage = (props) => {
             className="mb-0"
           />
           <div className="mb-2">
-          <Form.Text id="passwordHelpBlock" className="text-dark">
-            Password must consists at least one uppercase letter, one lower case
-            letter, one digit, one special character and minimum 8 characters in
-            length
-          </Form.Text>
+            <Form.Text id="passwordHelpBlock" className="text-dark">
+              Password must consists at least one uppercase letter, one lower
+              case letter, one digit, one special character and minimum 8
+              characters in length
+            </Form.Text>
           </div>
           <Form.Control.Feedback type="invalid">
             {errors.password}
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group className="mb-3" controlId="confirmPassword">
+        <Form.Group className="mb-4" controlId="confirmPassword">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
             type="password"
