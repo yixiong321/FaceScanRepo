@@ -6,6 +6,10 @@ class LabGroupDataService {
     getLabGroups(){
         return http.get('/group/')
     }
+    
+    deleteLabGroup(data){
+        return http.delete('/group/',data)
+    }
 }
 
 export default new LabGroupDataService();

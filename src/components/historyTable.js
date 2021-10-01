@@ -1,10 +1,13 @@
 
-import React from 'react';
+import React,{useState, useEffect,useRef} from 'react';
 import { MDBDataTableV5 } from 'mdbreact';
 import { MDBBtn } from 'mdb-react-ui-kit';
 import {AiFillFolderOpen} from "react-icons/ai"
 import { Link } from 'react-router-dom'
+import SessionDataService from "../service/session-http"
+import { useGlobalContext } from "./Context";
 
+//////////////////////////// Methods to prepare the data //////////////////////////////////////////
 const addHistoryButtons=(data)=>{
     data.forEach(function (element) {
         element.btns = <Link to={`attendance?code=${element}&index=${element}&group=${element}`}>
@@ -15,26 +18,69 @@ const addHistoryButtons=(data)=>{
       });
     return data;
 }
+const formatSessionData=(labGroupData,sessionData)=>{
+  let newList = []
+  for(let x=0;x<sessionData.length;x++){
+    for(let i=0;i<labGroupData.length;i++){
+      if(labGroupData[i].lab_group_id===sessionData[x].lab_group){
+        let labGrp=labGroupData[i].lab_group_name
+        let id = sessionData[x].id
+        let session_name = sessionData[x].session_name
+        let date_time_start = sessionData[x].date_time_start
+        let date_time_end = sessionData[x].date_time_end
+        let newObj = {id,session_name,date_time_start,date_time_end,labGrp}
+        newList.push(newObj)
+      }
+    }
+  }
 
-//need to get the data from somewhr
-export const HistoryTable=(props)=> {
-  const [datatable, setDatatable] = React.useState({
+  return newList
+}
+
+const prepareSessionRows=(labData,SessData)=>{
+  let x = formatSessionData(labData,SessData)
+  let y = addHistoryButtons(x)
+  return y
+}
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const HistoryTable=()=> {
+  const { globalLabGroups } = useGlobalContext();
+  const [labGroups, setLabGroups] = useState([...globalLabGroups]);
+  //const [sessionData,setSessionData] = useState([])
+  const [datatable, setDatatable] = useState({
     columns: [
       {
-        label: 'Date',
-        field: 'date',
+        label: 'ID',
+        field: 'id',
         //field:"date_time_start"
         width: 150,
         attributes: {
           'aria-controls': 'DataTable',
-          'aria-label': 'Date',
+          'aria-label': 'id',
         },
       },
       {
-        label: 'Lab Group',
-        field: 'lab_group',
+        label: 'Session Name',
+        field: 'session_name',
         width: 150,
       },
+      {
+        label: 'Lab Group',
+        field: 'labGrp',
+        width: 150,
+      },
+      {
+        label: 'Start',
+        field: 'date_time_start',
+        width: 150,
+      },
+      {
+        label: 'End',
+        field: 'date_time_end',
+        width: 150,
+      },
+
       {
         label: 'Actions',
         field: 'btns',
@@ -42,9 +88,35 @@ export const HistoryTable=(props)=> {
         sort: 'disabled',
       },
     ],
-    rows:addHistoryButtons(props.data),
+    rows:[],
   });
 
+ useEffect(() => {
+    let isSubscribed = true;
+      SessionDataService.getSessions().then(
+        response =>{
+          if(isSubscribed){
+            let x =prepareSessionRows(labGroups,response.data)
+            setDatatable((prevDatatable) => {
+              return {...prevDatatable, rows:x};
+            });
+          }})
+      return () => (isSubscribed = false)
+  }, []); 
+
+
+/*   useEffect(() => {
+    const fetchSS = async () => {
+      let response1 = await SessionDataService.getSessions()
+      console.log('fk',response1.data)
+      let x =prepareSessionRows(labGroups,response1.data)
+      console.log('here',x)
+      setDatatable((prevDatatable) => {
+        return {...prevDatatable, rows:x};
+      });
+    }
+      fetchSS()
+  }, []); */
   return <MDBDataTableV5 
   hover 
   entriesOptions={[5, 20, 25]} 

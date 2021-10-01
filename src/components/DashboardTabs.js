@@ -34,7 +34,7 @@ export default function TabsSYS() {
         </MDBTabsItem>
         <MDBTabsItem>
           <MDBTabsLink className="tabsys" onClick={() => handleBasicClick('tab2')} active={basicActive === 'tab2'}>
-            View Attendance History
+            View Past Sessions
           </MDBTabsLink>
         </MDBTabsItem>
 
