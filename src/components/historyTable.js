@@ -104,19 +104,6 @@ export const HistoryTable=()=> {
       return () => (isSubscribed = false)
   }, []); 
 
-
-/*   useEffect(() => {
-    const fetchSS = async () => {
-      let response1 = await SessionDataService.getSessions()
-      console.log('fk',response1.data)
-      let x =prepareSessionRows(labGroups,response1.data)
-      console.log('here',x)
-      setDatatable((prevDatatable) => {
-        return {...prevDatatable, rows:x};
-      });
-    }
-      fetchSS()
-  }, []); */
   return <MDBDataTableV5 
   hover 
   entriesOptions={[5, 20, 25]} 
