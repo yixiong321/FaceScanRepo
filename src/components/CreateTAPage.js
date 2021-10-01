@@ -24,14 +24,13 @@ const CreateTAPage = (props) => {
       });
   };
 
-  const findFormErrors = async() => {
+  const findFormErrors = async () => {
     const { password, confirmPassword } = info;
     const newErrors = {};
-    // check username in database
-    // check email in database (not checked)
-    const response = await checkAccountInDB()
-    if(response === "username"){
-      newErrors.username = "Username already exists!"
+    const response = await checkAccountInDB();
+
+    if (response && response.username) {
+      newErrors.username = response.username[0];
     }
 
     if (
@@ -42,6 +41,8 @@ const CreateTAPage = (props) => {
       newErrors.password = "Password does not meet requirements!";
     } else if (password !== confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match!";
+    } else if (response && response.password) {
+      newErrors.password = response.password[0];
     }
     return newErrors;
   };
@@ -54,22 +55,20 @@ const CreateTAPage = (props) => {
       password,
       email,
     };
-    try{
+    try {
       await TADataService.postTA(data);
-    }
-    catch(e){
-        if(e.response.data.username) return "username"
+    } catch (e) {
+      return e.response.data;
     }
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = await findFormErrors();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
       alert("New TA account successfully created!");
-      // send info to server but password needs to be encrypted (use bcrypt)
       setInfo(initialInfo);
     }
   };
