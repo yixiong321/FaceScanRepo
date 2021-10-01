@@ -1,81 +1,110 @@
-import { Container, Form, Button } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { Container, Form, Button, Image } from "react-bootstrap";
+import { useState } from "react";
 import { useGlobalContext } from "./Context";
-import StudentDataService from "../service/student-http"
+import StudentDataService from "../service/student-http";
+import StudentInLabGroupDataService from "../service/student-in-lab-group-http";
 
 const RegisterStudentPage = () => {
   const { globalLabGroups } = useGlobalContext();
-  let labGroups = globalLabGroups;
-  const { lab_group_id, course_code, course_name, lab_group_name } =
-    labGroups[0];
   const initialInfo = {
     name: "",
-    matric_number: "",
-    picture: {},
-    group: `${lab_group_id}, ${course_code}, ${course_name}, ${lab_group_name}`,
+    matric: "",
+    photo: {},
+    previewPhoto: "default-profile-picture.png"
   };
   const [info, setInfo] = useState(initialInfo);
   const [errors, setErrors] = useState({});
+  const [checkedArray, setCheckedArray] = useState(
+    new Array(globalLabGroups.length).fill(false)
+  );
 
   const handleChange = (field, value) => {
     setInfo({
       ...info,
       [field]: value,
     });
-
     if (!!errors[field])
       setErrors({
         ...errors,
         [field]: null,
       });
+
+    if(field === "photo"){
+      const reader = new FileReader();
+      reader.onload = () => {
+        if(reader.readyState === 2){
+          setInfo({...info, "photo": value, "previewPhoto" : reader.result})
+        }
+      }
+      if(value instanceof Blob){
+        reader.readAsDataURL(value);
+      }
+    }
   };
 
-  const findFormErrors = async() => {
-    const { matric_number, picture } = info;
+  const handleCheckbox = (id) => {
+    const newCheckedArray = checkedArray.map((item, index) => {
+      return (item = index === id - 1 ? !item : item);
+    });
+    setCheckedArray(newCheckedArray);
+  };
+
+  const findFormErrors = async () => {
+    const { photo } = info;
     const newErrors = {};
-    // check matric_number in database
-    const response = await checkAccountInDB()
-    if(response === "matric"){
-      newErrors.username = "Matriculation Number already exists!"
+    const response = await checkAccountInDB();
+
+    if (response && response.name) {
+      newErrors.name = response.name[0];
+    }
+    if (response && response.matric) {
+      newErrors.matric = response.matric[0];
     }
 
-    const fileType = picture['type']
-    if (fileType !== undefined && fileType.split('/')[0] !== "image") {
-      newErrors.picture = "Upload only a .png/.jpg/.jpeg file";
+    const fileType = photo["type"];
+    if (fileType !== undefined && fileType.split("/")[0] !== "image") {
+      newErrors.photo = "Upload only a .png/.jpg/.jpeg file";
     }
     return newErrors;
   };
 
   const checkAccountInDB = async () => {
-    const { name, matric_number, picture } = info;
-    const formData = new FormData()
-    console.log(picture);
-    // formData.append('picture', picture, picture.name)
-    const data = {
-      name,
-      matric_number,
-      formData,
-    };
-    
+    const { name, matric, photo } = info;
+
+    let fd = new FormData();
+    fd.append("name", name);
+    fd.append("matric", matric);
+    fd.append("photo", photo);
+    fd.append("type", photo.type);
+
     try {
-      await StudentDataService.postStudent(data);
+      const {
+        data: { id },
+      } = await StudentDataService.postStudent(fd);
+
+      checkedArray.map(async (item, index) => {
+        if (item) {
+          const data = {
+            lab_group: index + 1,
+            student: id,
+          };
+          await StudentInLabGroupDataService.postStudentInLabGroups(data);
+        }
+      });
     } catch (e) {
-      if (e.response.data.matric) return "matric";
+      return e.response.data;
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors = findFormErrors();
+    const newErrors = await findFormErrors();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
       alert("New student profile successfully created!");
-      // need to check the index of the lab group chosen
-      // process file
-      // send info to server
       setInfo(initialInfo);
-      document.getElementById("picture").value = null;
+      document.getElementById("photo").value = null;
     }
   };
 
@@ -83,7 +112,7 @@ const RegisterStudentPage = () => {
     <Container>
       <Form className="form w-75" onSubmit={handleSubmit}>
         <h1 className="text-center mb-3">Register Student</h1>
-        <Form.Group className="mb-3" controlId="name">
+        <Form.Group className="mb-4" controlId="name">
           <Form.Label>Name</Form.Label>
           <Form.Control
             autoFocus
@@ -97,47 +126,53 @@ const RegisterStudentPage = () => {
             {errors.name}
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group className="mb-3" controlId="matric_number">
+        <Form.Group className="mb-4" controlId="matric">
           <Form.Label>Matriculation Number</Form.Label>
           <Form.Control
             type="text"
             required
-            value={info.matric_number}
-            onChange={(e) => handleChange("matric_number", e.target.value)}
-            isInvalid={!!errors.matric_number}
+            value={info.matric}
+            onChange={(e) => handleChange("matric", e.target.value)}
+            isInvalid={!!errors.matric}
           />
           <Form.Control.Feedback type="invalid">
-            {errors.matric_number}
+            {errors.matric}
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group className="mb-3" controlId="picture">
-          <Form.Label>Student Picture</Form.Label>
+        <Form.Group className="mb-4" controlId="photo">
+          <Form.Label>Student Photo</Form.Label>
+          <div>
+          <Image src={info.previewPhoto} className="w-25 h-50 mb-3" thumbnail />
+          </div>
           <Form.Control
             type="file"
             required
-            onChange={(e) => handleChange("picture", e.target.files[0])}
+            onChange={(e) => handleChange("photo", e.target.files[0])}
+            isInvalid={!!errors.photo}
           />
+          <Form.Control.Feedback type="invalid" className="pt-3">
+            {errors.photo}
+          </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group className="mb-3" controlId="group">
-          <Form.Label>Lab Group</Form.Label>
-          <Form.Control
-            as="select"
-            className="form-select"
-            required
-            onChange={(e) => handleChange("group", e.target.value)}
-          >
-            {labGroups.map(
+
+        <Form.Group className="mb-4" controlId="group">
+          <Form.Label>Lab Groups</Form.Label>
+          <div className="scroll">
+            {globalLabGroups.map(
               ({ lab_group_id, course_code, course_name, lab_group_name }) => {
                 return (
-                  <option key={lab_group_id}>
-                    {`${lab_group_id}, ${course_code}, ${course_name}, ${lab_group_name}`}
-                  </option>
+                  <Form.Check
+                    key={lab_group_id}
+                    label={`${course_code}, ${course_name}, ${lab_group_name}`}
+                    checked={checkedArray[lab_group_id - 1]}
+                    onChange={(e) => handleCheckbox(lab_group_id)}
+                  />
                 );
               }
             )}
-          </Form.Control>
+          </div>
         </Form.Group>
-        <Button type="submit" className="mb-3 w-100">
+        <Button type="submit" className="mb-4 w-100">
           Create Student Profile
         </Button>
       </Form>

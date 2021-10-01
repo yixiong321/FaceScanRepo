@@ -39,7 +39,7 @@ a.navbar-brand{
 }
 
 .form{
-  margin: 5vh auto;
+  margin: 0 auto;
 }
 
 .login-page{
@@ -94,4 +94,12 @@ a.navbar-brand{
 .face-capture-modal .modal-footer {
   margin-top: -1px;
   border-top: 0 none !important;
+}
+
+.scroll{
+  height: 50vh;
+  padding: 10px 15px;
+  border-radius: 10px;
+  background-color: #85a6de;
+  overflow: auto;
 }
