@@ -1,5 +1,5 @@
 import { Container, Form, Button, Image } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useGlobalContext } from "./Context";
 import StudentDataService from "../service/student-http";
 import StudentInLabGroupDataService from "../service/student-in-lab-group-http";
@@ -16,7 +16,7 @@ const RegisterStudentPage = () => {
   const [errors, setErrors] = useState({});
   let initialCheckedState = {};
   globalLabGroups.map(({ lab_group_id }) => {
-    initialCheckedState[lab_group_id] = false;
+    return initialCheckedState[lab_group_id] = false;
   });
   const [checkedState, setCheckedState] = useState(initialCheckedState);
 
@@ -43,10 +43,6 @@ const RegisterStudentPage = () => {
       }
     }
   };
-
-  useEffect(() => {
-    console.log(checkedState);
-  }, [checkedState]);
 
   const handleCheckbox = (id) => {
     checkedState[id] = !checkedState[id];

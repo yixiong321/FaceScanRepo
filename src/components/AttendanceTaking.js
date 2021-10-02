@@ -7,12 +7,12 @@ const AttendanceTaking = () => {
     
     const { search } = useLocation()
     //will have to include session id
-    const { code, index, group } = queryString.parse(search)
+    const { session_id, course_code, lab_group } = queryString.parse(search)
 
     return (
         <Container className="text-center">
-            <h3>{`Session ID: To be included`}</h3>
-            <h5>{`Course Code: ${code}, Course Index: ${index}, Lab Group: ${group}`}</h5>
+            <h3>{`Session ID: ${session_id}`}</h3>
+            <h5>{`Course Code: ${course_code}, Lab Group: ${lab_group}`}</h5>
             <FaceDetection />
         </Container>
     )

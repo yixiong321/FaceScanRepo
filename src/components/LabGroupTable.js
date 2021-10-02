@@ -1,15 +1,18 @@
-import { Container, Modal } from "react-bootstrap";
-import { useState } from "react";
+import { Container, Modal, Form } from "react-bootstrap";
+import { useState, useEffect } from "react";
 import { MDBDataTableV5, MDBInput } from "mdbreact";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { useGlobalContext } from "./Context";
-import LabGroupDataService from "../service/lab-group-http"
-import CourseDataService from "../service/course-http"
+import LabGroupDataService from "../service/lab-group-http";
+import CourseDataService from "../service/course-http";
+import SessionDataService from "../service/session-http";
+import Datetime from "react-datetime";
+import "react-datetime/css/react-datetime.css";
 
 export const LabGrpsTable = () => {
   //// STATES ///
   //this is to determine whether to show/hide the confirmation modal
-  const { globalLabGroups,setGlobalLabGroups } = useGlobalContext();
+  const { globalLabGroups, setGlobalLabGroups } = useGlobalContext();
 
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -18,17 +21,31 @@ export const LabGrpsTable = () => {
   const [editRow, setEditRow] = useState({});
   const [newRow, setNewRow] = useState({});
   const [labGroups, setLabGroups] = useState([...globalLabGroups]);
-  
-  const removeLabGrpsButtons=(data)=>{
-    data.forEach(function(entry){
-      delete entry.actions
-    })
-    return data
-  }
-  //adding the btns for the different actions
-  const addLabGrpButtons =(data)=> {
+  const [startSession, setStartSession] = useState(false);
+  const sessionData = {
+    course_code: "",
+    session_name: "",
+    date_time_start: "",
+    date_time_end: "",
+    lab_group: 0,
+  };
+  const [session, setSession] = useState(sessionData);
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    console.log(session);
+  }, [session]);
+
+  const removeLabGrpsButtons = (data) => {
     data.forEach(function (entry) {
-      entry.actions = isEditing? 
+      delete entry.actions;
+    });
+    return data;
+  };
+  //adding the btns for the different actions
+  const addLabGrpButtons = (data) => {
+    data.forEach(function (entry) {
+      entry.actions = isEditing ? (
         <div>
           <MDBBtn color="primary" size="sm" disabled className="tableBtns">
             New
@@ -57,8 +74,22 @@ export const LabGrpsTable = () => {
           >
             Del
           </MDBBtn>
-        </div>:<div>
-          <MDBBtn color="primary" size="sm" className="tableBtns">
+        </div>
+      ) : (
+        <div>
+          <MDBBtn
+            color="primary"
+            size="sm"
+            className="tableBtns"
+            onClick={(e) => {
+              setSession({
+                ...session,
+                lab_group: entry.lab_group_id,
+                course_code: entry.course_id,
+              })
+              setStartSession(true);
+            }}
+          >
             New
           </MDBBtn>{" "}
           <MDBBtn
@@ -85,7 +116,7 @@ export const LabGrpsTable = () => {
             Del
           </MDBBtn>
         </div>
-      
+      );
     });
     return data;
   };
@@ -102,7 +133,7 @@ export const LabGrpsTable = () => {
         },
       },
       {
-        label: "Course code",
+        label: "Course Code",
         field: "course_code",
         width: 150,
       },
@@ -126,25 +157,23 @@ export const LabGrpsTable = () => {
     rows: addLabGrpButtons(labGroups),
   });
 
- 
-
   const handleDeleteLabGrp = async (e) => {
     e.preventDefault();
     // delete from db
-    for( let i = 0; i < labGroups.length; i++){ 
-      if ( labGroups[i] === selected) { 
-        labGroups.splice(i, 1); 
+    for (let i = 0; i < labGroups.length; i++) {
+      if (labGroups[i] === selected) {
+        labGroups.splice(i, 1);
       }
     }
 
-    LabGroupDataService.deleteLabGroup(selected).then(()=>{
-      setGlobalLabGroups(labGroups)
-      let filtered = addLabGrpButtons(labGroups)
-      setEditing(false)
+    LabGroupDataService.deleteLabGroup(selected).then(() => {
+      setGlobalLabGroups(labGroups);
+      let filtered = addLabGrpButtons(labGroups);
+      setEditing(false);
       setDatatable((prevDatatable) => {
         return { ...prevDatatable, rows: filtered };
       });
-    })
+    });
     setDeleteModal(false);
   };
 
@@ -185,15 +214,15 @@ export const LabGrpsTable = () => {
     setNewRow({ ...datatable.rows[toEditIndex] });
 
     Object.keys(datatable.rows[toEditIndex]).map((key) => {
-      if(key === 'lab_group_name') {
+      if (key === "lab_group_name") {
         datatable.rows[toEditIndex][key] = (
           <MDBInput
             value={datatable.rows[toEditIndex][key]}
             onChange={(e) => handleChange(e, toEditIndex, key)}
           ></MDBInput>
-        )
+        );
       }
-    })
+    });
     setDatatable((prevDatatable) => {
       return { ...prevDatatable, rows: datatable.rows };
     });
@@ -203,25 +232,75 @@ export const LabGrpsTable = () => {
     datatable.rows[editIndex] = editRow;
     setDatatable((prevDatatable) => {
       return { ...prevDatatable, rows: datatable.rows };
-    })
-    setEditing(false)
+    });
+    setEditing(false);
   };
 
   const handleSaveEditLabGrp = () => {
     //push changes to datatable
     let data = {
       lab_group_name: newRow.lab_group_name,
-    }
-    labGroups[editIndex]=newRow
-    LabGroupDataService.updateLabGroup(newRow.lab_group_id,data).then(()=>{
-      setGlobalLabGroups(labGroups)
-      let filtered = addLabGrpButtons(labGroups)
-      setEditing(false)
+    };
+    labGroups[editIndex] = newRow;
+    LabGroupDataService.updateLabGroup(newRow.lab_group_id, data).then(() => {
+      setGlobalLabGroups(labGroups);
+      let filtered = addLabGrpButtons(labGroups);
+      setEditing(false);
       setDatatable((prevDatatable) => {
         return { ...prevDatatable, rows: filtered };
       });
-    })
-    setEditing(false)
+    });
+    setEditing(false);
+  };
+
+  const handleFormChange = (field, value) => {
+    setSession({
+      ...session,
+      [field]: value,
+    });
+    if (!!errors[field])
+      setErrors({
+        ...errors,
+        [field]: null,
+      });
+  };
+
+  const findFormErrors = async() => {
+    const newErrors = {};
+    const response = await checkServerResponse();
+
+    if(response && response.session_name){
+      newErrors.session_name = response.session_name[0]
+    }
+
+    return newErrors;
+  };
+
+  const checkServerResponse = async() => {
+    try{
+      const { course_code, session_name, date_time_start, date_time_end, lab_group } = session;
+      const data = {
+        session_name,
+        date_time_start,
+        date_time_end,
+        lab_group,
+      };
+      const {data: {id}} = await SessionDataService.postNewSession(data);
+      window.open(`/session?session_id=${id}&course_code=${course_code}&lab_group=${lab_group}`, "_blank")
+    }
+    catch(e){
+      return e.response?.data
+    }
+  }
+
+  const handleStartSession = async (e) => {
+    const newErrors = findFormErrors();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+    } else {
+      setSession(sessionData);
+      setStartSession(false)
+    }
   };
 
   return isEditing ? (
@@ -277,6 +356,63 @@ export const LabGrpsTable = () => {
             No
           </MDBBtn>
         </Modal.Footer>
+      </Modal>
+      <Modal
+        show={startSession}
+        onHide={() => {
+          setStartSession(false);
+        }}
+      >
+        <Modal.Header>
+          <Modal.Body>
+            <Form>
+              <h5>New Session for Lab Group {session.lab_group}</h5>
+              <Form.Group className="my-4" controlId="session_name">
+                <Form.Label>Session Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  required
+                  value={session.session_name}
+                  onChange={(e) =>
+                    handleFormChange("session_name", e.target.value)
+                  }
+                  isInvalid={!!errors.session_name}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.session_name}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-4" controlId="date_time_start">
+                <Form.Label>Start Date and Time</Form.Label>
+                <Datetime
+                  inputProps={{required: true}}
+                  value={session.date_time_start}
+                  onChange={(moment) =>
+                    handleFormChange("date_time_start", moment)
+                  }
+                />
+              </Form.Group>
+              <Form.Group className="mb-4" controlId="date_time_end">
+                <Form.Label>End Date and Time</Form.Label>
+                <Datetime
+                  inputProps={{required: true}}
+                  value={session.date_time_end}
+                  onChange={(moment) =>
+                    handleFormChange("date_time_end", moment)
+                  }
+                />
+              </Form.Group>
+              <Modal.Footer>
+                <MDBBtn onClick={handleStartSession}>
+                  Start a new lab session
+                </MDBBtn>
+                <MDBBtn color="danger" onClick={() => setStartSession(false)}>
+                  Cancel
+                </MDBBtn>
+              </Modal.Footer>
+            </Form>
+          </Modal.Body>
+        </Modal.Header>
       </Modal>
     </Container>
   );

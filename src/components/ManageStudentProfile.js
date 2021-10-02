@@ -35,19 +35,14 @@ const ManageStudentProfile = () => {
 
     let initialCheckedState = {};
     globalLabGroups.map(({ lab_group_id }) => {
-      initialCheckedState[lab_group_id] = false;
+      return initialCheckedState[lab_group_id] = false;
     });
     lab_groups?.map(({ lab_group }) => {
-      initialCheckedState[lab_group] = true;
+      return initialCheckedState[lab_group] = true;
     })
     console.log(initialCheckedState);
     setCheckedState(initialCheckedState);
-  }, [searchResult]);
-
-  // useEffect(() => {
-  //   console.log(info);
-  //   console.log(checkedState)
-  // }, [info, checkedState]);
+  }, [searchResult, globalLabGroups]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -171,8 +166,8 @@ const ManageStudentProfile = () => {
       setErrors(newErrors);
     } else {
       alert("Student Profile has been updated!");
-      // setSearchResult({});
-      // setSearchText("");
+      setSearchResult({});
+      setSearchText("");
     }
   };
 
