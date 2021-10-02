@@ -11,6 +11,10 @@ class StudentInLabGroupDataService {
     postStudentInLabGroups(data){
         return http.post('/student-in-lab-group/', data)
     }
+
+    deleteStudentInLabGroups(id){
+        return http.delete(`/student-in-lab-group/${id}/`)
+    }
 }
 
 export default new StudentInLabGroupDataService();

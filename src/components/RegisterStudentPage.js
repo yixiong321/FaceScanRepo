@@ -1,5 +1,5 @@
 import { Container, Form, Button, Image } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGlobalContext } from "./Context";
 import StudentDataService from "../service/student-http";
 import StudentInLabGroupDataService from "../service/student-in-lab-group-http";
@@ -10,13 +10,15 @@ const RegisterStudentPage = () => {
     name: "",
     matric: "",
     photo: {},
-    previewPhoto: "default-profile-picture.png"
+    previewPhoto: "default-profile-picture.png",
   };
   const [info, setInfo] = useState(initialInfo);
   const [errors, setErrors] = useState({});
-  const [checkedArray, setCheckedArray] = useState(
-    new Array(globalLabGroups.length).fill(false)
-  );
+  let initialCheckedState = {};
+  globalLabGroups.map(({ lab_group_id }) => {
+    initialCheckedState[lab_group_id] = false;
+  });
+  const [checkedState, setCheckedState] = useState(initialCheckedState);
 
   const handleChange = (field, value) => {
     setInfo({
@@ -29,24 +31,26 @@ const RegisterStudentPage = () => {
         [field]: null,
       });
 
-    if(field === "photo"){
+    if (field === "photo") {
       const reader = new FileReader();
       reader.onload = () => {
-        if(reader.readyState === 2){
-          setInfo({...info, "photo": value, "previewPhoto" : reader.result})
+        if (reader.readyState === 2) {
+          setInfo({ ...info, photo: value, previewPhoto: reader.result });
         }
-      }
-      if(value instanceof Blob){
+      };
+      if (value instanceof Blob) {
         reader.readAsDataURL(value);
       }
     }
   };
 
+  useEffect(() => {
+    console.log(checkedState);
+  }, [checkedState]);
+
   const handleCheckbox = (id) => {
-    const newCheckedArray = checkedArray.map((item, index) => {
-      return (item = index === id - 1 ? !item : item);
-    });
-    setCheckedArray(newCheckedArray);
+    checkedState[id] = !checkedState[id];
+    setCheckedState({ ...checkedState });
   };
 
   const findFormErrors = async () => {
@@ -82,17 +86,17 @@ const RegisterStudentPage = () => {
         data: { id },
       } = await StudentDataService.postStudent(fd);
 
-      checkedArray.map(async (item, index) => {
-        if (item) {
+      for (const lab_group_id in checkedState) {
+        if (checkedState[lab_group_id]) {
           const data = {
-            lab_group: index + 1,
+            lab_group: lab_group_id,
             student: id,
           };
           await StudentInLabGroupDataService.postStudentInLabGroups(data);
         }
-      });
+      }
     } catch (e) {
-      return e.response.data;
+      return e.response?.data;
     }
   };
 
@@ -104,6 +108,7 @@ const RegisterStudentPage = () => {
     } else {
       alert("New student profile successfully created!");
       setInfo(initialInfo);
+      setCheckedState(initialCheckedState);
       document.getElementById("photo").value = null;
     }
   };
@@ -142,7 +147,11 @@ const RegisterStudentPage = () => {
         <Form.Group className="mb-4" controlId="photo">
           <Form.Label>Student Photo</Form.Label>
           <div>
-          <Image src={info.previewPhoto} className="w-25 h-50 mb-3" thumbnail />
+            <Image
+              src={info.previewPhoto}
+              className="w-25 h-50 mb-3"
+              thumbnail
+            />
           </div>
           <Form.Control
             type="file"
@@ -164,7 +173,7 @@ const RegisterStudentPage = () => {
                   <Form.Check
                     key={lab_group_id}
                     label={`${course_code}, ${course_name}, ${lab_group_name}`}
-                    checked={checkedArray[lab_group_id - 1]}
+                    checked={checkedState[lab_group_id]}
                     onChange={(e) => handleCheckbox(lab_group_id)}
                   />
                 );

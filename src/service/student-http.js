@@ -13,13 +13,13 @@ class StudentDataService {
     }
 
     // update student data
-    putStudent(id, data){
-        return http.put(`/student/${id}`, data)
+    patchStudent(id, data){
+        return http.patch(`/student/${id}/`, data)
     }
 
     // delete student by id
     deleteStudent(id){
-        return http.delete(`/student/${id}`)
+        return http.delete(`/student/${id}/`)
     }
 }
 

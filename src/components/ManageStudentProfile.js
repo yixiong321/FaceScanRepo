@@ -21,28 +21,33 @@ const ManageStudentProfile = () => {
     name: "",
     matric: "",
     photo: {},
-    lab_groups: {},
+    lab_groups: [],
     previewPhoto: "",
   };
   const [info, setInfo] = useState(initialInfo);
   const [errors, setErrors] = useState({});
   const [deleteProfile, setDeleteProfile] = useState(false);
-  const [checkedArray, setCheckedArray] = useState([]);
+  const [checkedState, setCheckedState] = useState({});
 
   useEffect(() => {
     const { id, name, matric, photo, previewPhoto, lab_groups } = searchResult;
     setInfo({ id, name, matric, photo, previewPhoto, lab_groups });
 
-    const initialCheckedArray = new Array(globalLabGroups.length).fill(false);
-    lab_groups?.map(({ lab_group }) => {
-      return (initialCheckedArray[lab_group - 1] = true);
+    let initialCheckedState = {};
+    globalLabGroups.map(({ lab_group_id }) => {
+      initialCheckedState[lab_group_id] = false;
     });
-    setCheckedArray(initialCheckedArray);
+    lab_groups?.map(({ lab_group }) => {
+      initialCheckedState[lab_group] = true;
+    })
+    console.log(initialCheckedState);
+    setCheckedState(initialCheckedState);
   }, [searchResult]);
 
-  useEffect(() => {
-    console.log(info);
-  }, [info]);
+  // useEffect(() => {
+  //   console.log(info);
+  //   console.log(checkedState)
+  // }, [info, checkedState]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -53,10 +58,10 @@ const ManageStudentProfile = () => {
       searchText
     );
 
+    const { matric } = studentProfile.data[0];
+
     if (studentProfile.data.length > 0) {
-      let lab_groups = await StudentInLabGroupDataService.getLabGroupsOfStudent(
-        studentProfile.data[0].matric
-      );
+      let lab_groups = await StudentInLabGroupDataService.getLabGroupsOfStudent(matric);
       setSearchResult({
         ...studentProfile.data[0],
         previewPhoto: studentProfile.data[0].photo,
@@ -93,10 +98,8 @@ const ManageStudentProfile = () => {
   };
 
   const handleCheckbox = (id) => {
-    const newCheckedArray = checkedArray.map((item, index) => {
-      return (item = index === id - 1 ? !item : item);
-    });
-    setCheckedArray(newCheckedArray);
+    checkedState[id] = !checkedState[id];
+    setCheckedState({ ...checkedState });
   };
 
   const findFormErrors = async () => {
@@ -121,32 +124,45 @@ const ManageStudentProfile = () => {
   const checkAccountInDB = async () => {
     const { id, name, matric, photo } = info;
 
-    if (typeof photo === "string") {
-      URL.revokeObjectURL(photo)
-      console.log(photo)
-    }
-
     let fd = new FormData();
     fd.append("name", name);
     fd.append("matric", matric);
-    fd.append("photo", photo);
-    fd.append("type", photo.type);
+    if(typeof photo !== "string"){
+      fd.append("photo", photo);
+      fd.append("type", photo.type);
+    }
     
     try {
-      let response = await StudentDataService.putStudent(id, fd);
-      // checkedArray.map(async (item, index) => {
-      //   if (item) {
-      //     const data = {
-      //       lab_group: index + 1,
-      //       student: id,
-      //     };
-      //     await StudentInLabGroupDataService.postStudentInLabGroups(data);
-      //   }
-      // });
+      await StudentDataService.patchStudent(id, fd);
+      await handleDeleteLabGroups()
+      await handleAddLabGroups()
     } catch (e) {
       return e.response.data;
     }
   };
+
+  const handleDeleteLabGroups = async() => {
+    info.lab_groups.map(async({id, lab_group}) => {
+      if(!checkedState[lab_group]){
+        await StudentInLabGroupDataService.deleteStudentInLabGroups(id)
+      }
+    })
+  }
+
+  const handleAddLabGroups = async() => {
+    for (const lab_group_id in checkedState) {
+      if (checkedState[lab_group_id]) {
+        let found = info.lab_groups.filter(({lab_group}) =>  lab_group == lab_group_id);
+        if(found.length === 0){
+          const data = {
+            lab_group: lab_group_id,
+            student: info.id
+          }
+          await StudentInLabGroupDataService.postStudentInLabGroups(data)
+        }
+      }
+    }
+  }
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -155,9 +171,6 @@ const ManageStudentProfile = () => {
       setErrors(newErrors);
     } else {
       alert("Student Profile has been updated!");
-      // need to check the index of the lab group chosen
-      // process file
-      // send info to server
       // setSearchResult({});
       // setSearchText("");
     }
@@ -269,7 +282,7 @@ const ManageStudentProfile = () => {
                             <Form.Check
                               key={lab_group_id}
                               label={`${course_code}, ${course_name}, ${lab_group_name}`}
-                              checked={checkedArray[lab_group_id - 1]}
+                              checked={checkedState[lab_group_id]}
                               onChange={(e) => handleCheckbox(lab_group_id)}
                             />
                           );
