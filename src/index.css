@@ -103,3 +103,7 @@ a.navbar-brand{
   background-color: #85a6de;
   overflow: auto;
 }
+
+.tableBtns {
+  width: 60px;
+}

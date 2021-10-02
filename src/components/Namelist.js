@@ -19,12 +19,12 @@ const NamelistTable=(props)=> {
     const [datatable, setDatatable] = useState({
       columns: [
         {
-          label: 'Name',
-          field: 'name',
+          label: 'Student Name',
+          field: 'student',
           width: 150,
           attributes: {
             'aria-controls': 'DataTable',
-            'aria-label': 'Name',
+            'aria-label': 'student',
           },
         },
         {
@@ -38,10 +38,26 @@ const NamelistTable=(props)=> {
             width: 150,
         },
         {
-            label: 'Attendance',
-            field: 'attendance',
+          label: 'Date Time Captured',
+          field: 'date_time_captured',
+          width: 150,
+        },
+        {
+          label: 'Date Time Captured',
+          field: 'date_time_captured',
+          width: 150,
+        },
+        
+        {
+            label: 'Attendance Status',
+            field: 'status',
             width: 150,
         },
+        {
+          label: 'Remarks',
+          field: 'Remarks',
+          width: 150,
+      },
       ],
       rows:addNamelistSelect(props.data),
     });

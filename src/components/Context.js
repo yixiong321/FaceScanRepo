@@ -30,7 +30,7 @@ const AppProvider = ({ children }) => {
         response2.data.forEach(({id, course_code, course_name}) => {
           let course_id = id
           if(course_id === course){
-            let newObj = {lab_group_id, course_name, course_code, lab_group_name}
+            let newObj = {lab_group_id, course_name, course_code, lab_group_name,course_id}
             newList.push(newObj)
           }
         })
@@ -41,12 +41,13 @@ const AppProvider = ({ children }) => {
     if(!globalLabGroups){
       fetchLabGroups()
     }
-}, []);
-
+}, [globalLabGroups]);
+  
   return (
     <AppContext.Provider
       value={{
         globalLabGroups,
+        setGlobalLabGroups
       }}
     >
       {children}
@@ -57,5 +58,6 @@ const AppProvider = ({ children }) => {
 export const useGlobalContext = () => {
   return useContext(AppContext);
 };
+
 
 export { AppContext, AppProvider };

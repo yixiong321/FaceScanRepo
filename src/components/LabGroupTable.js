@@ -3,13 +3,13 @@ import { useState } from "react";
 import { MDBDataTableV5, MDBInput } from "mdbreact";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { useGlobalContext } from "./Context";
-// import LabGroupDataService from "../service/lab-group-http"
-// import CourseDataService from "../service/course-http"
+import LabGroupDataService from "../service/lab-group-http"
+import CourseDataService from "../service/course-http"
 
 export const LabGrpsTable = () => {
   //// STATES ///
   //this is to determine whether to show/hide the confirmation modal
-  const { globalLabGroups } = useGlobalContext();
+  const { globalLabGroups,setGlobalLabGroups } = useGlobalContext();
 
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -18,11 +18,17 @@ export const LabGrpsTable = () => {
   const [editRow, setEditRow] = useState({});
   const [newRow, setNewRow] = useState({});
   const [labGroups, setLabGroups] = useState([...globalLabGroups]);
-
+  
+  const removeLabGrpsButtons=(data)=>{
+    data.forEach(function(entry){
+      delete entry.actions
+    })
+    return data
+  }
   //adding the btns for the different actions
-  const addLabGrpButtons = (data) => {
+  const addLabGrpButtons =(data)=> {
     data.forEach(function (entry) {
-      entry.actions = isEditing ? (
+      entry.actions = isEditing? 
         <div>
           <MDBBtn color="primary" size="sm" disabled className="tableBtns">
             New
@@ -51,9 +57,7 @@ export const LabGrpsTable = () => {
           >
             Del
           </MDBBtn>
-        </div>
-      ) : (
-        <div>
+        </div>:<div>
           <MDBBtn color="primary" size="sm" className="tableBtns">
             New
           </MDBBtn>{" "}
@@ -81,7 +85,7 @@ export const LabGrpsTable = () => {
             Del
           </MDBBtn>
         </div>
-      );
+      
     });
     return data;
   };
@@ -122,15 +126,25 @@ export const LabGrpsTable = () => {
     rows: addLabGrpButtons(labGroups),
   });
 
-  const handleDeleteLabGrp = (e) => {
+ 
+
+  const handleDeleteLabGrp = async (e) => {
     e.preventDefault();
-    var filtered = datatable.rows.filter(function (el) {
-      return el.lab_group_id != selected;
-    });
-    setDatatable((prevDatatable) => {
-      return { ...prevDatatable, rows: filtered };
-    });
-    // delete from db need to see the API
+    // delete from db
+    for( let i = 0; i < labGroups.length; i++){ 
+      if ( labGroups[i] === selected) { 
+        labGroups.splice(i, 1); 
+      }
+    }
+
+    LabGroupDataService.deleteLabGroup(selected).then(()=>{
+      setGlobalLabGroups(labGroups)
+      let filtered = addLabGrpButtons(labGroups)
+      setEditing(false)
+      setDatatable((prevDatatable) => {
+        return { ...prevDatatable, rows: filtered };
+      });
+    })
     setDeleteModal(false);
   };
 
@@ -171,15 +185,15 @@ export const LabGrpsTable = () => {
     setNewRow({ ...datatable.rows[toEditIndex] });
 
     Object.keys(datatable.rows[toEditIndex]).map((key) => {
-      if (key != "actions") {
+      if(key === 'lab_group_name') {
         datatable.rows[toEditIndex][key] = (
           <MDBInput
             value={datatable.rows[toEditIndex][key]}
             onChange={(e) => handleChange(e, toEditIndex, key)}
           ></MDBInput>
-        );
+        )
       }
-    });
+    })
     setDatatable((prevDatatable) => {
       return { ...prevDatatable, rows: datatable.rows };
     });
@@ -189,18 +203,25 @@ export const LabGrpsTable = () => {
     datatable.rows[editIndex] = editRow;
     setDatatable((prevDatatable) => {
       return { ...prevDatatable, rows: datatable.rows };
-    });
-    setEditing(false);
+    })
+    setEditing(false)
   };
 
   const handleSaveEditLabGrp = () => {
     //push changes to datatable
-    datatable.rows[editIndex] = newRow;
-    // console.log(newRow)
-    setDatatable((prevDatatable) => {
-      return { ...prevDatatable, rows: datatable.rows };
-    });
-    setEditing(false);
+    let data = {
+      lab_group_name: newRow.lab_group_name,
+    }
+    labGroups[editIndex]=newRow
+    LabGroupDataService.updateLabGroup(newRow.lab_group_id,data).then(()=>{
+      setGlobalLabGroups(labGroups)
+      let filtered = addLabGrpButtons(labGroups)
+      setEditing(false)
+      setDatatable((prevDatatable) => {
+        return { ...prevDatatable, rows: filtered };
+      });
+    })
+    setEditing(false)
   };
 
   return isEditing ? (

@@ -6,6 +6,10 @@ class CourseDataService {
     getCourses(){
         return http.get('/course/')
     }
+
+    updateCourse(id,data){
+        return http.patch(`/course/${id}`,data)
+    }
 }
 
 export default new CourseDataService();

@@ -7,8 +7,13 @@ class LabGroupDataService {
         return http.get('/group/')
     }
     
-    deleteLabGroup(data){
-        return http.delete('/group/',data)
+    // delete Lab Group by id
+    deleteLabGroup(id){
+        return http.delete(`/group/${id}`)
+    }
+
+    updateLabGroup(id,data){
+        return http.patch(`/group/${id}/`,data)
     }
 }
 
