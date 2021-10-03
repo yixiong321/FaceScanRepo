@@ -17,9 +17,10 @@ const AppProvider = ({ children }) => {
   }
 
   const [globalLabGroups, setGlobalLabGroups] = useState(useLocalStorage())
-
+  const [goFetch,setGoFetch]=useState(0)
   useEffect(() => {
     const fetchLabGroups = async () => {
+      
       let response1 = await LabGroupDataService.getLabGroups()
       let response2 = await CourseDataService.getCourses()
   
@@ -39,15 +40,43 @@ const AppProvider = ({ children }) => {
       })
     }
     if(!globalLabGroups){
+      console.log('fetching lab groups first time')
       fetchLabGroups()
     }
-}, [globalLabGroups]);
+}, []);
+  useEffect(() => {
+  const fetchLabGroups = async () => {
+    
+    let response1 = await LabGroupDataService.getLabGroups()
+    let response2 = await CourseDataService.getCourses()
+
+    let newList = []
+
+    response1.data.forEach(({id , lab_group_name, course}) => {
+      let lab_group_id = id
+      response2.data.forEach(({id, course_code, course_name}) => {
+        let course_id = id
+        if(course_id === course){
+          let newObj = {lab_group_id, course_name, course_code, lab_group_name,course_id}
+          newList.push(newObj)
+        }
+      })
+      setGlobalLabGroups([...newList])
+      window.localStorage.setItem('lab_groups', JSON.stringify(newList))
+    })
+  }
   
+    console.log('goFetch',goFetch)
+    fetchLabGroups()
+  }, [goFetch]);
+
   return (
     <AppContext.Provider
       value={{
         globalLabGroups,
-        setGlobalLabGroups
+        setGlobalLabGroups,
+        goFetch,
+        setGoFetch
       }}
     >
       {children}

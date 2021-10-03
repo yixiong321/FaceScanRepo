@@ -12,7 +12,7 @@ import "react-datetime/css/react-datetime.css";
 export const LabGrpsTable = () => {
   //// STATES ///
   //this is to determine whether to show/hide the confirmation modal
-  const { globalLabGroups, setGlobalLabGroups } = useGlobalContext();
+  const { globalLabGroups, setGlobalLabGroups,setGoFetch,goFetch } = useGlobalContext();
 
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -35,7 +35,7 @@ export const LabGrpsTable = () => {
   useEffect(() => {
     console.log(session);
   }, [session]);
-
+ 
   const removeLabGrpsButtons = (data) => {
     data.forEach(function (entry) {
       delete entry.actions;
@@ -160,21 +160,24 @@ export const LabGrpsTable = () => {
   const handleDeleteLabGrp = async (e) => {
     e.preventDefault();
     // delete from db
-    for (let i = 0; i < labGroups.length; i++) {
-      if (labGroups[i] === selected) {
-        labGroups.splice(i, 1);
+    for( let i = 0; i < labGroups.length; i++){ 
+      if ( labGroups[i].lab_group_id == selected) { 
+        labGroups.splice(i, 1); 
+        console.log('found to be deleted')
       }
     }
-
-    LabGroupDataService.deleteLabGroup(selected).then(() => {
-      setGlobalLabGroups(labGroups);
+    
+    //console.log(globalLabGroups)
+     LabGroupDataService.deleteLabGroup(selected).then(() => {
+      let x = goFetch+1
+      setGoFetch(x)
       let filtered = addLabGrpButtons(labGroups);
       setEditing(false);
       setDatatable((prevDatatable) => {
         return { ...prevDatatable, rows: filtered };
       });
     });
-    setDeleteModal(false);
+    setDeleteModal(false); 
   };
 
   const handleChange = (e, index, key) => {
@@ -192,14 +195,6 @@ export const LabGrpsTable = () => {
     setDatatable((prevDatatable) => {
       return { ...prevDatatable, rows: datatable.rows };
     });
-  };
-
-  const postNewSession = () => {
-    return;
-    //get the current datetime
-    //id,session_name,date_time_start,date_time_end,lab_group
-    //get the variables and push to the db
-    //encode the variables to the url.
   };
 
   const handleEditLabGrp = (labGrpID) => {
@@ -243,7 +238,8 @@ export const LabGrpsTable = () => {
     };
     labGroups[editIndex] = newRow;
     LabGroupDataService.updateLabGroup(newRow.lab_group_id, data).then(() => {
-      setGlobalLabGroups(labGroups);
+      let x = goFetch+1
+      setGoFetch(x)
       let filtered = addLabGrpButtons(labGroups);
       setEditing(false);
       setDatatable((prevDatatable) => {
