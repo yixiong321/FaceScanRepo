@@ -1,5 +1,5 @@
 import { Container, Modal, Form } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { MDBDataTableV5, MDBInput } from "mdbreact";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { useGlobalContext } from "./Context";
@@ -23,19 +23,15 @@ export const LabGrpsTable = () => {
   const [labGroups, setLabGroups] = useState([...globalLabGroups]);
   const [startSession, setStartSession] = useState(false);
   const sessionData = {
-    course_code: "",
+    course: 0, //id
     session_name: "",
     date_time_start: "",
     date_time_end: "",
-    lab_group: 0,
+    lab_group: 0, //id
   };
   const [session, setSession] = useState(sessionData);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({})
 
-  useEffect(() => {
-    console.log(session);
-  }, [session]);
- 
   const removeLabGrpsButtons = (data) => {
     data.forEach(function (entry) {
       delete entry.actions;
@@ -85,7 +81,7 @@ export const LabGrpsTable = () => {
               setSession({
                 ...session,
                 lab_group: entry.lab_group_id,
-                course_code: entry.course_id,
+                course: entry.course_id,
               })
               setStartSession(true);
             }}
@@ -274,7 +270,7 @@ export const LabGrpsTable = () => {
 
   const checkServerResponse = async() => {
     try{
-      const { course_code, session_name, date_time_start, date_time_end, lab_group } = session;
+      const { course, session_name, date_time_start, date_time_end, lab_group } = session;
       const data = {
         session_name,
         date_time_start,
@@ -282,7 +278,8 @@ export const LabGrpsTable = () => {
         lab_group,
       };
       const {data: {id}} = await SessionDataService.postNewSession(data);
-      window.open(`/session?session_id=${id}&course_code=${course_code}&lab_group=${lab_group}`, "_blank")
+      
+      window.open(`/session?session=${id}&course=${course}&lab_group=${lab_group}`, "_blank")
     }
     catch(e){
       return e.response?.data

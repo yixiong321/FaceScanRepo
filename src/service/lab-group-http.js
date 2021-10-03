@@ -6,6 +6,10 @@ class LabGroupDataService {
     getLabGroups(){
         return http.get('/group/')
     }
+
+    getLabGroupById(id){
+        return http.get(`/group/${id}/`)
+    }
     
     // delete Lab Group by id
     deleteLabGroup(id){

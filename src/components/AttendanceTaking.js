@@ -1,21 +1,64 @@
 import { useLocation } from "react-router-dom";
-import queryString from 'query-string';
+import queryString from "query-string";
 import { Container } from "react-bootstrap";
 import FaceDetection from "./FaceDetection";
+import { useState, useEffect, useCallback } from "react";
+import SessionDataService from "../service/session-http";
+import LabGroupDataService from "../service/lab-group-http";
+import CourseDataService from "../service/course-http";
 
 const AttendanceTaking = () => {
-    
-    const { search } = useLocation()
-    //will have to include session id
-    const { session_id, course_code, lab_group } = queryString.parse(search)
+  const { search } = useLocation();
+  const [validPage, setValidPage] = useState(false);
+  const { session, course, lab_group } = queryString.parse(search);
+  const [pageInfo, setPageInfo] = useState({});
 
-    return (
-        <Container className="text-center">
-            <h3>{`Session ID: ${session_id}`}</h3>
-            <h5>{`Course Code: ${course_code}, Lab Group: ${lab_group}`}</h5>
-            <FaceDetection />
-        </Container>
-    )
-}
+  const checkValidPage = useCallback(async () => {
+    try {
+      const response1 = await SessionDataService.getSessionById(session);
+      const { session_name } = response1.data;
+      if (lab_group != response1.data.lab_group) {
+        return;
+      }
+      const response2 = await LabGroupDataService.getLabGroupById(lab_group);
+      const { lab_group_name } = response2.data;
+      if (course != response2.data.course) {
+        return;
+      }
 
-export default AttendanceTaking
+      const response3 = await CourseDataService.getCourseById(course);
+      const { course_name, course_code } = response3.data;
+
+      setPageInfo({
+        ...pageInfo,
+        session_id: session,
+        session_name,
+        course_id: course,
+        lab_group_id: lab_group,
+        lab_group_name,
+        course_name,
+        course_code,
+      });
+
+      setValidPage(true);
+    } catch (e) {
+      setValidPage(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkValidPage();
+  }, [checkValidPage]);
+
+  return validPage ? (
+    <Container className="text-center overflow-hidden">
+      <h3>{`Session ID: ${pageInfo.session_id}, Session Name: ${pageInfo.session_name}`}</h3>
+      <h5>{`Course Code: ${pageInfo.course_code}, Course Name: ${pageInfo.course_name}, Lab Group: ${pageInfo.lab_group_name}`}</h5>
+      <FaceDetection {...pageInfo}/>
+    </Container>
+  ) : (
+    <Container className="error">Invalid Page</Container>
+  );
+};
+
+export default AttendanceTaking;

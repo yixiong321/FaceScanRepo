@@ -2,12 +2,16 @@ import http from "../http-json";
 
 class CourseDataService {
     
-    // get all course
+    // get all courses
     getCourses(){
         return http.get('/course/')
     }
 
-    updateCourse(id,data){
+    getCourseById(id){
+        return http.get(`/course/${id}/`)
+    }
+
+    updateCourse(id, data){
         return http.patch(`/course/${id}`,data)
     }
 }

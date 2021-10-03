@@ -81,6 +81,16 @@ a.navbar-brand{
   transform: translate(75%, 25%);
 }
 
+.attendance-taking{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#captureCanvas{
+  transform: translateY(100%);
+}
+
 .face-capture-modal{
   transform: translate(10%, 10%);
 }
@@ -106,4 +116,10 @@ a.navbar-brand{
 
 .tableBtns {
   width: 60px;
+}
+
+.error{
+  font-size: 3rem;
+  margin: 40vh auto;
+  text-align: center;
 }
