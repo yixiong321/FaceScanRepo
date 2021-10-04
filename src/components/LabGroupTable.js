@@ -12,7 +12,7 @@ import "react-datetime/css/react-datetime.css";
 export const LabGrpsTable = () => {
   //// STATES ///
   //this is to determine whether to show/hide the confirmation modal
-  const { globalLabGroups, setGlobalLabGroups,setGoFetch,goFetch } = useGlobalContext();
+  const { globalLabGroups, setGlobalLabGroups, setGoFetch, goFetch } = useGlobalContext();
 
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -32,12 +32,6 @@ export const LabGrpsTable = () => {
   const [session, setSession] = useState(sessionData);
   const [errors, setErrors] = useState({})
 
-  const removeLabGrpsButtons = (data) => {
-    data.forEach(function (entry) {
-      delete entry.actions;
-    });
-    return data;
-  };
   //adding the btns for the different actions
   const addLabGrpButtons = (data) => {
     data.forEach(function (entry) {
@@ -156,16 +150,16 @@ export const LabGrpsTable = () => {
   const handleDeleteLabGrp = async (e) => {
     e.preventDefault();
     // delete from db
-    for( let i = 0; i < labGroups.length; i++){ 
-      if ( labGroups[i].lab_group_id == selected) { 
-        labGroups.splice(i, 1); 
+    for (let i = 0; i < labGroups.length; i++) {
+      if (labGroups[i].lab_group_id == selected) {
+        labGroups.splice(i, 1);
         console.log('found to be deleted')
       }
     }
-    
+
     //console.log(globalLabGroups)
-     LabGroupDataService.deleteLabGroup(selected).then(() => {
-      let x = goFetch+1
+    LabGroupDataService.deleteLabGroup(selected).then(() => {
+      let x = goFetch + 1
       setGoFetch(x)
       let filtered = addLabGrpButtons(labGroups);
       setEditing(false);
@@ -173,7 +167,7 @@ export const LabGrpsTable = () => {
         return { ...prevDatatable, rows: filtered };
       });
     });
-    setDeleteModal(false); 
+    setDeleteModal(false);
   };
 
   const handleChange = (e, index, key) => {
@@ -234,7 +228,7 @@ export const LabGrpsTable = () => {
     };
     labGroups[editIndex] = newRow;
     LabGroupDataService.updateLabGroup(newRow.lab_group_id, data).then(() => {
-      let x = goFetch+1
+      let x = goFetch + 1
       setGoFetch(x)
       let filtered = addLabGrpButtons(labGroups);
       setEditing(false);
@@ -257,19 +251,19 @@ export const LabGrpsTable = () => {
       });
   };
 
-  const findFormErrors = async() => {
+  const findFormErrors = async () => {
     const newErrors = {};
     const response = await checkServerResponse();
 
-    if(response && response.session_name){
+    if (response && response.session_name) {
       newErrors.session_name = response.session_name[0]
     }
 
     return newErrors;
   };
 
-  const checkServerResponse = async() => {
-    try{
+  const checkServerResponse = async () => {
+    try {
       const { course, session_name, date_time_start, date_time_end, lab_group } = session;
       const data = {
         session_name,
@@ -277,11 +271,11 @@ export const LabGrpsTable = () => {
         date_time_end,
         lab_group,
       };
-      const {data: {id}} = await SessionDataService.postNewSession(data);
-      
+      const { data: { id } } = await SessionDataService.postNewSession(data);
+
       window.open(`/session?session=${id}&course=${course}&lab_group=${lab_group}`, "_blank")
     }
-    catch(e){
+    catch (e) {
       return e.response?.data
     }
   }
@@ -378,7 +372,7 @@ export const LabGrpsTable = () => {
               <Form.Group className="mb-4" controlId="date_time_start">
                 <Form.Label>Start Date and Time</Form.Label>
                 <Datetime
-                  inputProps={{required: true}}
+                  inputProps={{ required: true }}
                   value={session.date_time_start}
                   onChange={(moment) =>
                     handleFormChange("date_time_start", moment)
@@ -388,7 +382,7 @@ export const LabGrpsTable = () => {
               <Form.Group className="mb-4" controlId="date_time_end">
                 <Form.Label>End Date and Time</Form.Label>
                 <Datetime
-                  inputProps={{required: true}}
+                  inputProps={{ required: true }}
                   value={session.date_time_end}
                   onChange={(moment) =>
                     handleFormChange("date_time_end", moment)

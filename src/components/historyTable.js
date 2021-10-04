@@ -3,14 +3,14 @@ import React,{useState, useEffect,useRef} from 'react';
 import { MDBDataTableV5 } from 'mdbreact';
 import { MDBBtn } from 'mdb-react-ui-kit';
 import {AiFillFolderOpen} from "react-icons/ai"
-import { Link } from 'react-router-dom'
+import { Link,useParams } from 'react-router-dom'
 import SessionDataService from "../service/session-http"
 import { useGlobalContext } from "./Context";
 
 //////////////////////////// Methods to prepare the data //////////////////////////////////////////
 const addHistoryButtons=(data)=>{
     data.forEach(function (element) {
-        element.btns = <Link to={`attendance?code=${element}&index=${element}&group=${element}`}>
+        element.btns = <Link to={`attendance/lab_session=${element.id}/${element.labGrp}`}>
         <MDBBtn color="info" size="sm">
         <AiFillFolderOpen></AiFillFolderOpen>
         </MDBBtn>
