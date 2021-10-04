@@ -6,6 +6,10 @@ class LoginDataService {
     postToken(data){
         return http.post('/token/', data)
     }
+
+    postRefreshToken(data){
+        return http.post('/token/refresh/', data)
+    }
 }
 
 export default new LoginDataService();

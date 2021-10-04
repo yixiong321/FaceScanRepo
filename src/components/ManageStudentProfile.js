@@ -40,7 +40,6 @@ const ManageStudentProfile = () => {
     lab_groups?.map(({ lab_group }) => {
       return initialCheckedState[lab_group] = true;
     })
-    console.log(initialCheckedState);
     setCheckedState(initialCheckedState);
   }, [searchResult, globalLabGroups]);
 
@@ -52,10 +51,9 @@ const ManageStudentProfile = () => {
     let studentProfile = await StudentDataService.getStudentByMatric(
       searchText
     );
-
-    const { matric } = studentProfile.data[0];
-
+    
     if (studentProfile.data.length > 0) {
+      const { matric } = studentProfile.data[0];
       let lab_groups = await StudentInLabGroupDataService.getLabGroupsOfStudent(matric);
       setSearchResult({
         ...studentProfile.data[0],
@@ -184,7 +182,7 @@ const ManageStudentProfile = () => {
   };
 
   return (
-    <Container>
+    <div>
       <Form className="form my-0 w-100" onSubmit={handleSearch}>
         <h1 className="text-center mb-4">Manage Student Profile</h1>
         <Form.Group controlId="name" className="d-flex">
@@ -220,7 +218,7 @@ const ManageStudentProfile = () => {
               <Col md={4}>
                 <Image
                   src={info.previewPhoto}
-                  className="w-100 h-50 mb-3"
+                  className="mb-3"
                   thumbnail
                 />
                 <Form.Label className="text-center">Student Photo</Form.Label>
@@ -307,7 +305,7 @@ const ManageStudentProfile = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Container>
+    </div>
   );
 };
 

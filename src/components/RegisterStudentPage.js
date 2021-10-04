@@ -1,5 +1,5 @@
 import { Container, Form, Button, Image } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGlobalContext } from "./Context";
 import StudentDataService from "../service/student-http";
 import StudentInLabGroupDataService from "../service/student-in-lab-group-http";
@@ -19,6 +19,10 @@ const RegisterStudentPage = () => {
     return initialCheckedState[lab_group_id] = false;
   });
   const [checkedState, setCheckedState] = useState(initialCheckedState);
+
+  useEffect(() => {
+    console.log(info)
+  }, [info])
 
   const handleChange = (field, value) => {
     setInfo({
@@ -59,6 +63,10 @@ const RegisterStudentPage = () => {
     }
     if (response && response.matric) {
       newErrors.matric = response.matric[0];
+    }
+
+    if(response && response.photo){
+      newErrors.photo = response.photo[0];
     }
 
     const fileType = photo["type"];
@@ -110,7 +118,6 @@ const RegisterStudentPage = () => {
   };
 
   return (
-    <Container>
       <Form className="form w-75" onSubmit={handleSubmit}>
         <h1 className="text-center mb-3">Register Student</h1>
         <Form.Group className="mb-4" controlId="name">
@@ -181,7 +188,6 @@ const RegisterStudentPage = () => {
           Create Student Profile
         </Button>
       </Form>
-    </Container>
   );
 };
 

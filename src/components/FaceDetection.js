@@ -18,7 +18,8 @@ const FaceDetection = ({ session_id }) => {
   const [camera, setCamera] = useState(false);
   const initialCapturedStatus = {
     capture: false,
-    error: false
+    error: false,
+    error_msg: ""
   }
   const [capturedStatus, setCapturedStatus] = useState(initialCapturedStatus);
   const videoRef = useRef(null);
@@ -31,8 +32,9 @@ const FaceDetection = ({ session_id }) => {
 
   useEffect(async() => {
     if (detected) {
-      let success = await captureImage()
-      setTimeout(() => {
+      await captureImage()
+      const timeout = setTimeout(() => {
+        clearTimeout(timeout)
         setCapturedStatus(initialCapturedStatus)
       }, 5000)
     }
@@ -64,17 +66,20 @@ const FaceDetection = ({ session_id }) => {
           video,
           getFaceDetectorOptions()
         ).withFaceLandmarks(true);
-        if (faces) {
-          setDetected(true);
-          const dims = matchDimensions(canvas, video, true);
-          const resizedResults = resizeResults(faces, dims);
-          if (true) {
-            draw.drawDetections(canvas, resizedResults);
+        
+        setTimeout(() => {
+          if (faces) {
+            setDetected(true);
+            const dims = matchDimensions(canvas, video, true);
+            const resizedResults = resizeResults(faces, dims);
+            if (true) {
+              draw.drawDetections(canvas, resizedResults);
+            }
+          } else {
+            setDetected(false);
+            ctx.clearRect(0, 0, video.videoWidth, video.videoHeight);
           }
-        } else {
-          setDetected(false);
-          ctx.clearRect(0, 0, video.videoWidth, video.videoHeight);
-        }
+        }, 2000)
       }
       start();
     };
@@ -111,19 +116,21 @@ const FaceDetection = ({ session_id }) => {
       let fd = new FormData();
       fd.append("photo", file);
       fd.append("type", 'image/jpg');
-      const {data: {success}} = await AttendanceDataService.postNewAttendance(session_id, fd)
-      if(success){
+      try{
+        await AttendanceDataService.postNewAttendance(session_id, fd)
+       
         setCapturedStatus({
           ...capturedStatus,
           capture: true,
           error: false
         })
       }
-      else{
+      catch(e){
         setCapturedStatus({
           ...capturedStatus,
           capture: false,
-          error: true
+          error: true,
+          error_msg: e.response.data[0] || "Reload The Page"
         })
       }
     });
@@ -158,7 +165,7 @@ const FaceDetection = ({ session_id }) => {
           className="face-capture-modal"
         >
           <Modal.Header className="bg-danger text-center font-weight-bold">
-            <Modal.Body className="mt-3">Face Not Recognized, Try Again!</Modal.Body>
+            <Modal.Body className="mt-3">{capturedStatus.error_msg}</Modal.Body>
           </Modal.Header>
           <Modal.Footer className="bg-danger"></Modal.Footer>
         </Modal>

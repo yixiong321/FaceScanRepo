@@ -1,40 +1,22 @@
 import { Container, Form, Button, Image } from "react-bootstrap";
 import { useState, useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
-import LoginDataService from '../service/login-http'
+import LoginDataService from "../service/login-http";
 
 const LoginPage = ({ setIsAuthorized }) => {
   let history = useHistory();
   setIsAuthorized(false);
-  
+
   const initialInfo = useMemo(() => {
     return {
       username: "",
       password: "",
     };
-  }, [])
-  
+  }, []);
+
   const [info, setInfo] = useState(initialInfo);
   const [errors, setErrors] = useState({});
-  const [auth, setAuth] = useState(false)
-
-  useEffect(() => {
-    const fetchToken = async() => {
-      const {username, password} = info
-      const {data: {refresh, access}} = await LoginDataService.postToken({username, password})
-      if(refresh && access){
-        window.localStorage.setItem('refresh', refresh)
-        window.localStorage.setItem('access', access)
-        history.push("/home");
-        setIsAuthorized(true);
-        setInfo(initialInfo);
-      }
-    }
-    if(auth){
-      fetchToken()
-      return () => setAuth(false)
-    }
-  }, [auth, history, info, initialInfo, setIsAuthorized])
+  const [auth, setAuth] = useState(false);
 
   const handleChange = (field, value) => {
     setInfo({
@@ -48,23 +30,41 @@ const LoginPage = ({ setIsAuthorized }) => {
       });
   };
 
-  const findFormErrors = () => {
-    // const { username, password } = info;
+  const findFormErrors = async () => {
     const newErrors = {};
-    // check username in database
+    const response = await checkAccountInDB();
 
-    // check if password match the account
-
+    if (response && response.detail) {
+      newErrors.password = response.detail;
+    }
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const checkAccountInDB = async () => {
+    try {
+      const { username, password } = info;
+      const {
+        data: { refresh, access },
+      } = await LoginDataService.postToken({ username, password });
+      if (refresh && access) {
+        window.localStorage.setItem("refresh", refresh);
+        window.localStorage.setItem("access", access);
+        history.push("/home");
+        setIsAuthorized(true);
+        setInfo(initialInfo);
+      }
+    } catch (e) {
+      return e.response?.data;
+    }
+  };
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    const newErrors = findFormErrors();
+    const newErrors = await findFormErrors();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
-      setAuth(true)
+      setAuth(true);
     }
   };
 
@@ -100,11 +100,15 @@ const LoginPage = ({ setIsAuthorized }) => {
             aria-describedby="passwordHelpBlock"
             className="mb-0"
           />
-          <Form.Control.Feedback type="invalid">
+          <Form.Control.Feedback type="invalid" className="pt-3">
             {errors.password}
           </Form.Control.Feedback>
         </Form.Group>
-        <Button variant="primary" type="submit" className="my-3 w-100">
+        <Button
+          variant="primary"
+          type="submit"
+          className="my-3 w-100"
+        >
           Login
         </Button>
       </Form>
