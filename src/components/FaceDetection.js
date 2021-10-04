@@ -18,6 +18,11 @@ const FaceDetection = ({ session_id }) => {
   const [camera, setCamera] = useState(false);
   const initialCapturedStatus = {
     capture: false,
+    capture_msg: {
+      name: "", 
+      matric: "", 
+      date_time_captured: "",
+    },
     error: false,
     error_msg: ""
   }
@@ -36,7 +41,7 @@ const FaceDetection = ({ session_id }) => {
       const timeout = setTimeout(() => {
         clearTimeout(timeout)
         setCapturedStatus(initialCapturedStatus)
-      }, 5000)
+      }, 7000)
     }
   }, [detected]);
 
@@ -117,11 +122,16 @@ const FaceDetection = ({ session_id }) => {
       fd.append("photo", file);
       fd.append("type", 'image/jpg');
       try{
-        await AttendanceDataService.postNewAttendance(session_id, fd)
+        const response = await AttendanceDataService.postNewAttendance(session_id, fd)
+        const {data: {attendance: {date_time_captured}, student: {name, matric}}} = response
        
         setCapturedStatus({
           ...capturedStatus,
           capture: true,
+          capture_msg: {
+            ...capturedStatus.capture_msg,
+            name, matric, date_time_captured
+          },
           error: false
         })
       }
@@ -152,7 +162,12 @@ const FaceDetection = ({ session_id }) => {
           className="face-capture-modal"
         >
           <Modal.Header className="bg-success text-center font-weight-bold">
-            <Modal.Body className="mt-3">Face Captured</Modal.Body>
+            <Modal.Body className="mt-3">
+              <h3>{`Attendance Taken`}</h3>
+              <h5>{`Name: ${capturedStatus.capture_msg.name}`}</h5>
+              <h5>{`Matric Number: ${capturedStatus.capture_msg.matric}`}</h5>
+              <h6>{`Date and Time Taken: ${capturedStatus.capture_msg.date_time_captured}`}</h6>
+            </Modal.Body>
           </Modal.Header>
           <Modal.Footer className="bg-success"></Modal.Footer>
         </Modal>
