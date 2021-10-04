@@ -21,6 +21,11 @@ class StudentDataService {
     deleteStudent(id){
         return http.delete(`/student/${id}/`)
     }
+
+    //get student by id
+    getStudentByID(id){
+        return http.get(`/student/${id}/`)
+    }
 }
 
 export default new StudentDataService();

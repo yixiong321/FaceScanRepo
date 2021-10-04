@@ -123,3 +123,6 @@ a.navbar-brand{
   margin: 40vh auto;
   text-align: center;
 }
+.selection {
+  width: 100px;
+ }

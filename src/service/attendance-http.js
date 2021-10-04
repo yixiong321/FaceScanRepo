@@ -9,6 +9,10 @@ class AttendanceDataService {
     getAttendanceFromSessionId(id){
         return http.get(`/attendance/?${id}`)
     }
+    //update the atd record with id
+    patchAttendanceFromID(id,data){
+        return http.patch(`/attendance/${id}/`,data)
+    }
 }
 
 export default new AttendanceDataService();

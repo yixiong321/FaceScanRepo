@@ -34,7 +34,7 @@ function App() {
                   component={ManageStudentProfile}
                 />
                 <Route path="/session" component={AttendanceTaking}/>
-                <Route path="/attendance/:sessionid/:labGrp" component ={()=><NamelistTable></NamelistTable>}/>
+                <Route path="/attendance/:sessionid/:labGrp" component ={NamelistTable}/>
             </Col>
           </Row>
         </Container>)
