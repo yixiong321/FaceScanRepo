@@ -16,6 +16,7 @@ const FaceDetection = ({ session_id }) => {
   const [canvas, setCanvas] = useState(null);
   const [detected, setDetected] = useState(false);
   const [camera, setCamera] = useState(false);
+
   const initialCapturedStatus = {
     capture: false,
     capture_msg: {
@@ -41,7 +42,7 @@ const FaceDetection = ({ session_id }) => {
       const timeout = setTimeout(() => {
         clearTimeout(timeout)
         setCapturedStatus(initialCapturedStatus)
-      }, 7000)
+      }, 5000)
     }
   }, [detected]);
 

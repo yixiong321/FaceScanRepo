@@ -8,6 +8,7 @@ import CourseDataService from "../service/course-http";
 import SessionDataService from "../service/session-http";
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
+import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa'
 
 export const LabGrpsTable = () => {
   //// STATES ///
@@ -38,7 +39,7 @@ export const LabGrpsTable = () => {
       entry.actions = isEditing ? (
         <div>
           <MDBBtn color="primary" size="sm" disabled className="tableBtns">
-            New
+            <FaPlus />
           </MDBBtn>{" "}
           <MDBBtn
             color="secondary"
@@ -49,7 +50,7 @@ export const LabGrpsTable = () => {
             onClick={(e) => handleEditLabGrp(e.target.value)}
             className="tableBtns"
           >
-            Edit
+            <FaEdit />
           </MDBBtn>{" "}
           <MDBBtn
             color="danger"
@@ -62,7 +63,7 @@ export const LabGrpsTable = () => {
               setDeleteModal(true);
             }}
           >
-            Del
+            <FaTrash />
           </MDBBtn>
         </div>
       ) : (
@@ -80,7 +81,7 @@ export const LabGrpsTable = () => {
               setStartSession(true);
             }}
           >
-            New
+            <FaPlus />
           </MDBBtn>{" "}
           <MDBBtn
             color="secondary"
@@ -91,7 +92,7 @@ export const LabGrpsTable = () => {
               handleEditLabGrp(e.target.value);
             }}
           >
-            Edit
+            <FaEdit />
           </MDBBtn>{" "}
           <MDBBtn
             color="danger"
@@ -103,7 +104,7 @@ export const LabGrpsTable = () => {
               setDeleteModal(true);
             }}
           >
-            Del
+            <FaTrash />
           </MDBBtn>
         </div>
       );

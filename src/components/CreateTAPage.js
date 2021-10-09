@@ -75,10 +75,10 @@ const CreateTAPage = (props) => {
 
   return (
     <Container>
-      <Form className="form my-0 w-75" onSubmit={handleSubmit}>
-        <h1 className="text-center mb-3">Create TA Account</h1>
+      <Form className="form my-0 w-50" onSubmit={handleSubmit}>
+        <h3 className="text-center">Create TA Account</h3>
         <Form.Group className="mb-4" controlId="username">
-          <Form.Label>Username</Form.Label>
+          <Form.Label>Username*</Form.Label>
           <Form.Control
             autoFocus
             type="username"
@@ -92,7 +92,7 @@ const CreateTAPage = (props) => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-4" controlId="email">
-          <Form.Label>Email</Form.Label>
+          <Form.Label>Email*</Form.Label>
           <Form.Control
             type="email"
             required
@@ -105,7 +105,7 @@ const CreateTAPage = (props) => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-4" controlId="password">
-          <Form.Label>Password</Form.Label>
+          <Form.Label>Password*</Form.Label>
           <Form.Control
             type="password"
             required
@@ -116,7 +116,7 @@ const CreateTAPage = (props) => {
             className="mb-0"
           />
           <div className="mb-2">
-            <Form.Text id="passwordHelpBlock" className="text-dark">
+            <Form.Text id="passwordHelpBlock" className="text-muted">
               Password must consists at least one uppercase letter, one lower
               case letter, one digit, one special character and minimum 8
               characters in length
@@ -127,7 +127,7 @@ const CreateTAPage = (props) => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-4" controlId="confirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
+          <Form.Label>Confirm Password*</Form.Label>
           <Form.Control
             type="password"
             required

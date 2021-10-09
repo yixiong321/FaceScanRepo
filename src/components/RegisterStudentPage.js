@@ -118,10 +118,10 @@ const RegisterStudentPage = () => {
   };
 
   return (
-      <Form className="form w-75" onSubmit={handleSubmit}>
-        <h1 className="text-center mb-3">Register Student</h1>
+      <Form className="form w-50" onSubmit={handleSubmit}>
+        <h3 className="text-center">Register Student</h3>
         <Form.Group className="mb-4" controlId="name">
-          <Form.Label>Name</Form.Label>
+          <Form.Label>Name*</Form.Label>
           <Form.Control
             autoFocus
             type="text"
@@ -135,7 +135,7 @@ const RegisterStudentPage = () => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-4" controlId="matric">
-          <Form.Label>Matriculation Number</Form.Label>
+          <Form.Label>Matriculation Number*</Form.Label>
           <Form.Control
             type="text"
             required
@@ -148,11 +148,11 @@ const RegisterStudentPage = () => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-4" controlId="photo">
-          <Form.Label>Student Photo</Form.Label>
+          <Form.Label>Student Photo*</Form.Label>
           <div>
             <Image
               src={info.previewPhoto}
-              className="w-25 h-50 mb-3"
+              className="w-50 h-75 mb-3"
               thumbnail
             />
           </div>

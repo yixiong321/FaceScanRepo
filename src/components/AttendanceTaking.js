@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import queryString from "query-string";
-import { Container } from "react-bootstrap";
+import { Container, Spinner } from "react-bootstrap";
 import FaceDetection from "./FaceDetection";
 import { useState, useEffect, useCallback } from "react";
 import SessionDataService from "../service/session-http";
@@ -54,10 +54,14 @@ const AttendanceTaking = () => {
     <Container className="text-center overflow-hidden">
       <h3>{`Session ID: ${pageInfo.session_id}, Session Name: ${pageInfo.session_name}`}</h3>
       <h5>{`Course Code: ${pageInfo.course_code}, Course Name: ${pageInfo.course_name}, Lab Group: ${pageInfo.lab_group_name}`}</h5>
-      <FaceDetection {...pageInfo}/>
+      <FaceDetection {...pageInfo} />
     </Container>
   ) : (
-    <Container className="error">Invalid Page</Container>
+    <Container className="text-center">
+      <Spinner animation="border" />
+      <h4>If loading is taking too long, please reload</h4>
+    </Container>
+    
   );
 };
 

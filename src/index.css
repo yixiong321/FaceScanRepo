@@ -8,7 +8,7 @@ body {
 }
 
 .navbar {
-  max-width: 220px;
+  max-width: 230px;
   min-height: 100vh !important;
   background-color: #85a6de;
   align-items: initial !important;
@@ -20,8 +20,8 @@ body {
 }
 
 .navbar-text{
-  font-weight: bold;
-  letter-spacing: 0.6rem;
+  letter-spacing: 0.5rem;
+  font-size: 1.3rem;
   margin-bottom: 30px;
 }
 
@@ -38,25 +38,37 @@ a.navbar-brand{
   font-weight: bold;
 }
 
-.form{
-  margin: 0 auto;
+.nav-link svg{
+  position: relative;
+  top: -2px;
+  margin-right: 15px;
 }
 
 .login-page{
-  margin: 0 auto;
   width: 100vw; 
   height: 100vh;
   background-color: #85a6de;
 }
 
-.login-form{
-  width: 40vw;
-  margin: 0 auto;
+.login-box{
+  margin: auto 0;
+  width: 60vw !important;
+  height: 60vh !important;
 }
 
-.login-form h3{
-  letter-spacing: .5rem;
-  font-weight: 300;
+.logo-box{
+  background-color: #4e6999;
+  flex-basis: 30vw;
+  border-radius: 15px 0 0 15px;
+}
+
+.form-box{
+  background-color: white;
+  border-radius: 0 15px 15px 0;
+}
+
+.form{
+  margin: 0 auto;
 }
 
 .form-label{
@@ -76,8 +88,8 @@ a.navbar-brand{
 
 .canvas{
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 20vh;
+  left: 30vw;
   transform: translate(75%, 25%);
 }
 
@@ -123,6 +135,7 @@ a.navbar-brand{
   margin: 40vh auto;
   text-align: center;
 }
+
 .selection {
   width: 100px;
- }
+}
