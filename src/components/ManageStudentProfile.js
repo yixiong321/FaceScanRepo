@@ -68,9 +68,7 @@ const ManageStudentProfile = () => {
     } else {
       setSearchResult({});
     }
-    setTimeout(() => {
       setLoaded(true);
-    }, 2000);
   };
 
   const handleChange = (field, value) => {
@@ -285,12 +283,21 @@ const ManageStudentProfile = () => {
                       </div>
                     </Form.Group>
                     <div className="d-flex justify-content-center">
-                    <Button type="submit" className="w-50 mx-3" onClick={handleSave}>
-                      Save
-                    </Button>
-                    <Button type="submit" variant="danger" className="w-50 mx-3" onClick={(e) => setDeleteProfile(true)}>
-                      Delete
-                    </Button>
+                      <Button
+                        type="submit"
+                        className="w-50 mx-3"
+                        onClick={handleSave}
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        type="submit"
+                        variant="danger"
+                        className="w-50 mx-3"
+                        onClick={(e) => setDeleteProfile(true)}
+                      >
+                        Delete
+                      </Button>
                     </div>
                   </Form>
                 </Col>

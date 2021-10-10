@@ -8,12 +8,13 @@ import CourseDataService from "../service/course-http";
 import SessionDataService from "../service/session-http";
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
-import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa'
+import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 
 export const LabGrpsTable = () => {
   //// STATES ///
   //this is to determine whether to show/hide the confirmation modal
-  const { globalLabGroups, setGlobalLabGroups, setGoFetch, goFetch } = useGlobalContext();
+  const { globalLabGroups, setGlobalLabGroups, setGoFetch, goFetch } =
+    useGlobalContext();
 
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -31,7 +32,7 @@ export const LabGrpsTable = () => {
     lab_group: 0, //id
   };
   const [session, setSession] = useState(sessionData);
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({});
 
   //adding the btns for the different actions
   const addLabGrpButtons = (data) => {
@@ -77,7 +78,7 @@ export const LabGrpsTable = () => {
                 ...session,
                 lab_group: entry.lab_group_id,
                 course: entry.course_id,
-              })
+              });
               setStartSession(true);
             }}
           >
@@ -154,14 +155,14 @@ export const LabGrpsTable = () => {
     for (let i = 0; i < labGroups.length; i++) {
       if (labGroups[i].lab_group_id == selected) {
         labGroups.splice(i, 1);
-        console.log('found to be deleted')
+        console.log("found to be deleted");
       }
     }
 
     //console.log(globalLabGroups)
     LabGroupDataService.deleteLabGroup(selected).then(() => {
-      let x = goFetch + 1
-      setGoFetch(x)
+      let x = goFetch + 1;
+      setGoFetch(x);
       let filtered = addLabGrpButtons(labGroups);
       setEditing(false);
       setDatatable((prevDatatable) => {
@@ -229,8 +230,8 @@ export const LabGrpsTable = () => {
     };
     labGroups[editIndex] = newRow;
     LabGroupDataService.updateLabGroup(newRow.lab_group_id, data).then(() => {
-      let x = goFetch + 1
-      setGoFetch(x)
+      let x = goFetch + 1;
+      setGoFetch(x);
       let filtered = addLabGrpButtons(labGroups);
       setEditing(false);
       setDatatable((prevDatatable) => {
@@ -257,7 +258,7 @@ export const LabGrpsTable = () => {
     const response = await checkServerResponse();
 
     if (response && response.session_name) {
-      newErrors.session_name = response.session_name[0]
+      newErrors.session_name = response.session_name[0];
     }
 
     return newErrors;
@@ -265,21 +266,31 @@ export const LabGrpsTable = () => {
 
   const checkServerResponse = async () => {
     try {
-      const { course, session_name, date_time_start, date_time_end, lab_group } = session;
+      const {
+        course,
+        session_name,
+        date_time_start,
+        date_time_end,
+        lab_group,
+      } = session;
       const data = {
         session_name,
         date_time_start,
         date_time_end,
         lab_group,
       };
-      const { data: { id } } = await SessionDataService.postNewSession(data);
+      const {
+        data: { id },
+      } = await SessionDataService.postNewSession(data);
 
-      window.open(`/session?session=${id}&course=${course}&lab_group=${lab_group}`, "_blank")
+      window.open(
+        `/session?session=${id}&course=${course}&lab_group=${lab_group}`,
+        "_blank"
+      );
+    } catch (e) {
+      return e.response?.data;
     }
-    catch (e) {
-      return e.response?.data
-    }
-  }
+  };
 
   const handleStartSession = async (e) => {
     const newErrors = findFormErrors();
@@ -287,7 +298,7 @@ export const LabGrpsTable = () => {
       setErrors(newErrors);
     } else {
       setSession(sessionData);
-      setStartSession(false)
+      setStartSession(false);
     }
   };
 

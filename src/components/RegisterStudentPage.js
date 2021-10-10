@@ -16,13 +16,13 @@ const RegisterStudentPage = () => {
   const [errors, setErrors] = useState({});
   let initialCheckedState = {};
   globalLabGroups.map(({ lab_group_id }) => {
-    return initialCheckedState[lab_group_id] = false;
+    return (initialCheckedState[lab_group_id] = false);
   });
   const [checkedState, setCheckedState] = useState(initialCheckedState);
 
   useEffect(() => {
-    console.log(info)
-  }, [info])
+    console.log(info);
+  }, [info]);
 
   const handleChange = (field, value) => {
     setInfo({
@@ -65,7 +65,7 @@ const RegisterStudentPage = () => {
       newErrors.matric = response.matric[0];
     }
 
-    if(response && response.photo){
+    if (response && response.photo) {
       newErrors.photo = response.photo[0];
     }
 
@@ -118,76 +118,72 @@ const RegisterStudentPage = () => {
   };
 
   return (
-      <Form className="form w-50" onSubmit={handleSubmit}>
-        <h3 className="text-center">Register Student</h3>
-        <Form.Group className="mb-4" controlId="name">
-          <Form.Label>Name*</Form.Label>
-          <Form.Control
-            autoFocus
-            type="text"
-            required
-            value={info.name}
-            onChange={(e) => handleChange("name", e.target.value)}
-            isInvalid={!!errors.name}
-          />
-          <Form.Control.Feedback type="invalid">
-            {errors.name}
-          </Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group className="mb-4" controlId="matric">
-          <Form.Label>Matriculation Number*</Form.Label>
-          <Form.Control
-            type="text"
-            required
-            value={info.matric}
-            onChange={(e) => handleChange("matric", e.target.value)}
-            isInvalid={!!errors.matric}
-          />
-          <Form.Control.Feedback type="invalid">
-            {errors.matric}
-          </Form.Control.Feedback>
-        </Form.Group>
-        <Form.Group className="mb-4" controlId="photo">
-          <Form.Label>Student Photo*</Form.Label>
-          <div>
-            <Image
-              src={info.previewPhoto}
-              className="w-50 h-75 mb-3"
-              thumbnail
-            />
-          </div>
-          <Form.Control
-            type="file"
-            required
-            onChange={(e) => handleChange("photo", e.target.files[0])}
-            isInvalid={!!errors.photo}
-          />
-          <Form.Control.Feedback type="invalid" className="pt-3">
-            {errors.photo}
-          </Form.Control.Feedback>
-        </Form.Group>
+    <Form className="form w-50" onSubmit={handleSubmit}>
+      <h3 className="text-center">Register Student</h3>
+      <Form.Group className="mb-4" controlId="name">
+        <Form.Label>Name*</Form.Label>
+        <Form.Control
+          autoFocus
+          type="text"
+          required
+          value={info.name}
+          onChange={(e) => handleChange("name", e.target.value)}
+          isInvalid={!!errors.name}
+        />
+        <Form.Control.Feedback type="invalid">
+          {errors.name}
+        </Form.Control.Feedback>
+      </Form.Group>
+      <Form.Group className="mb-4" controlId="matric">
+        <Form.Label>Matriculation Number*</Form.Label>
+        <Form.Control
+          type="text"
+          required
+          value={info.matric}
+          onChange={(e) => handleChange("matric", e.target.value)}
+          isInvalid={!!errors.matric}
+        />
+        <Form.Control.Feedback type="invalid">
+          {errors.matric}
+        </Form.Control.Feedback>
+      </Form.Group>
+      <Form.Group className="mb-4" controlId="photo">
+        <Form.Label>Student Photo*</Form.Label>
+        <div>
+          <Image src={info.previewPhoto} className="w-50 h-75 mb-3" thumbnail />
+        </div>
+        <Form.Control
+          type="file"
+          required
+          onChange={(e) => handleChange("photo", e.target.files[0])}
+          isInvalid={!!errors.photo}
+        />
+        <Form.Control.Feedback type="invalid" className="pt-3">
+          {errors.photo}
+        </Form.Control.Feedback>
+      </Form.Group>
 
-        <Form.Group className="mb-4" controlId="group">
-          <Form.Label>Lab Groups</Form.Label>
-          <div className="scroll">
-            {globalLabGroups.map(
-              ({ lab_group_id, course_code, course_name, lab_group_name }) => {
-                return (
-                  <Form.Check
-                    key={lab_group_id}
-                    label={`${course_code}, ${course_name}, ${lab_group_name}`}
-                    checked={checkedState[lab_group_id]}
-                    onChange={(e) => handleCheckbox(lab_group_id)}
-                  />
-                );
-              }
-            )}
-          </div>
-        </Form.Group>
-        <Button type="submit" className="mb-4 w-100">
-          Create Student Profile
-        </Button>
-      </Form>
+      <Form.Group className="mb-4" controlId="group">
+        <Form.Label>Lab Groups</Form.Label>
+        <div className="scroll">
+          {globalLabGroups.map(
+            ({ lab_group_id, course_code, course_name, lab_group_name }) => {
+              return (
+                <Form.Check
+                  key={lab_group_id}
+                  label={`${course_code}, ${course_name}, ${lab_group_name}`}
+                  checked={checkedState[lab_group_id]}
+                  onChange={(e) => handleCheckbox(lab_group_id)}
+                />
+              );
+            }
+          )}
+        </div>
+      </Form.Group>
+      <Button type="submit" className="mb-4 w-100">
+        Create Student Profile
+      </Button>
+    </Form>
   );
 };
 

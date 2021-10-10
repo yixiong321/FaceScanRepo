@@ -13,7 +13,7 @@ const AttendanceTaking = () => {
   const { session, course, lab_group } = queryString.parse(search);
   const [pageInfo, setPageInfo] = useState({});
 
-  const checkValidPage = useCallback(async () => {
+  const checkValidPage = async() => {
     try {
       const response1 = await SessionDataService.getSessionById(session);
       const { session_name } = response1.data;
@@ -44,11 +44,11 @@ const AttendanceTaking = () => {
     } catch (e) {
       setValidPage(false);
     }
-  }, []);
+  }
 
   useEffect(() => {
     checkValidPage();
-  }, [checkValidPage]);
+  }, []);
 
   return validPage ? (
     <Container className="text-center overflow-hidden">
@@ -61,7 +61,6 @@ const AttendanceTaking = () => {
       <Spinner animation="border" />
       <h4>If loading is taking too long, please reload</h4>
     </Container>
-    
   );
 };
 

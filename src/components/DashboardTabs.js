@@ -1,8 +1,8 @@
-import { MDBCardHeader, MDBCheckbox, MDBContainer } from 'mdb-react-ui-kit';
+import { MDBCardHeader, MDBCheckbox, MDBContainer } from "mdb-react-ui-kit";
 import { LabGrpsTable } from "./LabGroupTable";
 import { HistoryTable } from "./historyTable";
 import history from "../data/History";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 import {
   MDBTabs,
@@ -10,11 +10,15 @@ import {
   MDBTabsLink,
   MDBTabsContent,
   MDBTabsPane,
-  MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBBtn
-} from 'mdb-react-ui-kit';
+  MDBCard,
+  MDBCardBody,
+  MDBCardTitle,
+  MDBCardText,
+  MDBBtn,
+} from "mdb-react-ui-kit";
 
 export default function TabsSYS() {
-  const [basicActive, setBasicActive] = useState('tab1');
+  const [basicActive, setBasicActive] = useState("tab1");
 
   const handleBasicClick = (value) => {
     if (value === basicActive) {
@@ -25,35 +29,40 @@ export default function TabsSYS() {
   };
 
   return (
-    <MDBCard className='shadow-5-strong' >
-      <MDBTabs className='mb-3'>
+    <MDBCard className="shadow-5-strong">
+      <MDBTabs className="mb-3">
         <MDBTabsItem>
-          <MDBTabsLink className="tabsys" onClick={() => handleBasicClick('tab1')} active={basicActive === 'tab1'}>
+          <MDBTabsLink
+            className="tabsys"
+            onClick={() => handleBasicClick("tab1")}
+            active={basicActive === "tab1"}
+          >
             Lab Groups
           </MDBTabsLink>
         </MDBTabsItem>
         <MDBTabsItem>
-          <MDBTabsLink className="tabsys" onClick={() => handleBasicClick('tab2')} active={basicActive === 'tab2'}>
+          <MDBTabsLink
+            className="tabsys"
+            onClick={() => handleBasicClick("tab2")}
+            active={basicActive === "tab2"}
+          >
             View Past Sessions
           </MDBTabsLink>
         </MDBTabsItem>
-
       </MDBTabs>
-   
-      <MDBTabsContent>
-        <MDBTabsPane show={basicActive === 'tab1'}>
-            <MDBContainer>
-                <LabGrpsTable></LabGrpsTable>
-            </MDBContainer>
-        </MDBTabsPane>
-        <MDBTabsPane show={basicActive === 'tab2'}>
-            <MDBContainer>
-                <HistoryTable data={history}></HistoryTable>
-            </MDBContainer>
-        </MDBTabsPane>
 
+      <MDBTabsContent>
+        <MDBTabsPane show={basicActive === "tab1"}>
+          <MDBContainer>
+            <LabGrpsTable></LabGrpsTable>
+          </MDBContainer>
+        </MDBTabsPane>
+        <MDBTabsPane show={basicActive === "tab2"}>
+          <MDBContainer>
+            <HistoryTable data={history}></HistoryTable>
+          </MDBContainer>
+        </MDBTabsPane>
       </MDBTabsContent>
-     
     </MDBCard>
   );
 }
@@ -73,4 +82,4 @@ export default function TabsSYS() {
                 <NamelistTable data={students}></NamelistTable>
             </MDBContainer>
         </MDBTabsPane>
-*/ 
+*/
