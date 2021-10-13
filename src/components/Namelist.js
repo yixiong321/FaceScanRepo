@@ -196,18 +196,18 @@ export const NamelistTable = () => {
     //need to push the edited value
     // changing data modified,edited remark and status
 
-    console.log(newRow);
-    let toUpdate = {
-      remarks: newRow.remarks,
-      status: newRow.status,
-      student: newRow.student,
-      lab_session: sessionid.slice(12),
-    };
-    AttendanceDataService.patchAttendanceFromID(editIndex, toUpdate).then(
-      () => {
+    let data = new FormData();
+    data.append("remarks", `${newRow.remarks}`);
+    data.append("status", `${newRow.status}`);
+    data.append("student",`${newRow.student}`);
+    data.append("lab_session",`${parseInt(sessionid.slice(12))}`);
+    
+    AttendanceDataService.patchAttendanceFromID(newRow.id,data).then(
+      async() => {
         //fetch the data
-        let response =
-          AttendanceDataService.getAttendanceFromSessionId(sessionid);
+        console.log("inside");
+        let response=await AttendanceDataService.getAttendanceFromSessionId(sessionid);
+        console.log(response.data);
         setDatatable((prevDatatable) => {
           return { ...prevDatatable, rows: response.data };
         });
