@@ -4,16 +4,14 @@ import { MDBDataTableV5, MDBInput } from "mdbreact";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { useGlobalContext } from "./Context";
 import LabGroupDataService from "../service/lab-group-http";
-import CourseDataService from "../service/course-http";
 import SessionDataService from "../service/session-http";
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 
 export const LabGrpsTable = () => {
-  //// STATES ///
-  //this is to determine whether to show/hide the confirmation modal
-  const { globalLabGroups, setGlobalLabGroups, setGoFetch, goFetch } =
+
+  const { globalLabGroups, setGoFetch, goFetch } =
     useGlobalContext();
 
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -25,16 +23,15 @@ export const LabGrpsTable = () => {
   const [labGroups, setLabGroups] = useState([...globalLabGroups]);
   const [startSession, setStartSession] = useState(false);
   const sessionData = {
-    course: 0, //id
+    course: 0,
     session_name: "",
     date_time_start: "",
     date_time_end: "",
-    lab_group: 0, //id
+    lab_group: 0,
   };
   const [session, setSession] = useState(sessionData);
   const [errors, setErrors] = useState({});
 
-  //adding the btns for the different actions
   const addLabGrpButtons = (data) => {
     data.forEach(function (entry) {
       entry.actions = isEditing ? (
@@ -49,7 +46,6 @@ export const LabGrpsTable = () => {
             className="tableBtns"
             value={entry.lab_group_id}
             onClick={(e) => handleEditLabGrp(e.target.value)}
-            className="tableBtns"
           >
             <FaEdit />
           </MDBBtn>{" "}
@@ -159,7 +155,6 @@ export const LabGrpsTable = () => {
       }
     }
 
-    //console.log(globalLabGroups)
     LabGroupDataService.deleteLabGroup(selected).then(() => {
       let x = goFetch + 1;
       setGoFetch(x);
@@ -195,7 +190,6 @@ export const LabGrpsTable = () => {
     let toEditIndex = datatable.rows.findIndex(
       (row) => row.lab_group_id == labGrpID
     );
-    // console.log(datatable.rows[toEditIndex])
     setEditRow({ ...datatable.rows[toEditIndex] });
     setEditIndex(toEditIndex);
     setEditing(true);

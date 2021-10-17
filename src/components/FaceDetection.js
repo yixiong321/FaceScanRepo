@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import {
   loadTinyFaceDetectorModel,
   detectSingleFace,
@@ -18,16 +18,18 @@ const FaceDetection = ({ session_id }) => {
   const [camera, setCamera] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const initialCapturedStatus = {
-    capture: false,
-    capture_msg: {
-      name: "",
-      matric: "",
-      date_time_captured: "",
-    },
-    error: false,
-    error_msg: "",
-  };
+  const initialCapturedStatus = useMemo(() => {
+    return {
+      capture: false,
+      capture_msg: {
+        name: "",
+        matric: "",
+        date_time_captured: "",
+      },
+      error: false,
+      error_msg: "",
+    };
+  }, []);
   const [capturedStatus, setCapturedStatus] = useState(initialCapturedStatus);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -37,21 +39,24 @@ const FaceDetection = ({ session_id }) => {
     setCanvas(canvasRef.current);
   }, []);
 
-  useEffect(async () => {
-    if (detected && !loading) {
-      const timeout = setTimeout(async() => {
-        clearTimeout(timeout)
-        await captureImage();
-      }, 3000)
-    }
-  }, [detected]);
+  useEffect(() => {
+    const capture = async () => {
+      if (detected && !loading) {
+        const timeout = setTimeout(async () => {
+          clearTimeout(timeout);
+          await captureImage();
+        }, 3000);
+      }
+    };
+    capture();
+  }, [detected, loading]);
 
-  useEffect(() =>{
+  useEffect(() => {
     const timeout = setTimeout(() => {
-      clearTimeout(timeout)
+      clearTimeout(timeout);
       setCapturedStatus(initialCapturedStatus);
-    }, 3000)
-  }, [loading])
+    }, 3000);
+  }, [loading, initialCapturedStatus]);
 
   const start = async () => {
     await launchCamera();
@@ -175,9 +180,9 @@ const FaceDetection = ({ session_id }) => {
       )}
       <video className="canvas" width="600" height="500" ref={videoRef} />
       <canvas className="canvas" ref={canvasRef} />
-      {loading && 
-        <Spinner className="spinner" animation="border" variant="white" /> 
-      }
+      {loading && (
+        <Spinner className="spinner" animation="border" variant="white" />
+      )}
       {camera && capturedStatus.capture && (
         <Modal
           show={capturedStatus.capture}

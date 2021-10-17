@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { MDBDataTableV5 } from "mdbreact";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { AiFillFolderOpen } from "react-icons/ai";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import SessionDataService from "../service/session-http";
 import { useGlobalContext } from "./Context";
 
-//////////////////////////// Methods to prepare the data //////////////////////////////////////////
 const addHistoryButtons = (data) => {
   data.forEach(function (element) {
     element.btns = (
@@ -49,18 +48,15 @@ const prepareSessionRows = (labData, SessData) => {
   let y = addHistoryButtons(x);
   return y;
 };
-////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const HistoryTable = () => {
   const { globalLabGroups } = useGlobalContext();
   const [labGroups, setLabGroups] = useState([...globalLabGroups]);
-  //const [sessionData,setSessionData] = useState([])
   const [datatable, setDatatable] = useState({
     columns: [
       {
         label: "ID",
         field: "id",
-        //field:"date_time_start"
         width: 150,
         attributes: {
           "aria-controls": "DataTable",
@@ -109,7 +105,7 @@ export const HistoryTable = () => {
       }
     });
     return () => (isSubscribed = false);
-  }, []);
+  }, [labGroups]);
 
   return (
     <MDBDataTableV5

@@ -13,7 +13,6 @@ import { Col, Row } from "react-bootstrap";
 import { Container } from "react-bootstrap";
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import { useState } from "react";
-import students from "./data/students";
 
 function App() {
   const [isAuthorized, setIsAuthorized] = useState(false)

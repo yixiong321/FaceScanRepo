@@ -3,22 +3,18 @@ import { MDBDataTableV5, MDBInput } from "mdbreact";
 import { MDBCard } from "mdb-react-ui-kit";
 import { MDBBtn } from "mdb-react-ui-kit";
 import AttendanceDataService from "../service/attendance-http";
-import StudentDataService from "../service/student-http";
 import { useParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
-import {FaEdit} from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 
 export const NamelistTable = () => {
   const { sessionid } = useParams();
   const [testing, setTesting] = useState(0);
-  //console.log('here',data)
 
-  const [selected, setSelected] = useState(null);
   const [isEditing, setEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(0);
   const [editRow, setEditRow] = useState({});
   const [newRow, setNewRow] = useState({});
-  const [allow, setAllow] = useState(0);
   const [datatable, setDatatable] = useState({
     columns: [
       {
@@ -35,16 +31,6 @@ export const NamelistTable = () => {
         field: "matric_number",
         width: 100,
       },
-      /*       {
-        label: 'Date Time Captured',
-        field: 'date_time_captured',
-        width: 100,
-      },
-      {
-        label: 'Date Time Modified',
-        field: 'date_time_modified',
-        width: 100,
-      }, */
       {
         label: "Attendance Status",
         field: "attendance",
@@ -52,7 +38,7 @@ export const NamelistTable = () => {
       {
         label: "Remarks",
         field: "remarks",
-        width:150
+        width: 150,
       },
       {
         label: "Actions",
@@ -77,9 +63,8 @@ export const NamelistTable = () => {
         }
       }
     );
-
     return () => (isSubscribed = false);
-  }, []);
+  }, [sessionid, testing]);
 
   useEffect(() => {
     const handleChange = (e, index, key) => {
@@ -106,7 +91,6 @@ export const NamelistTable = () => {
       let toEditIndex = datatable.rows.findIndex(
         (row) => row.student == studentID
       );
-      // console.log(datatable.rows[toEditIndex])
       setEditRow({ ...datatable.rows[toEditIndex] });
       setEditIndex(toEditIndex);
       setNewRow({ ...datatable.rows[toEditIndex] });
@@ -131,14 +115,14 @@ export const NamelistTable = () => {
             id={`${element.student}`}
             disabled
             className="selection"
-            value={`${element.status}` + `${element.student}`}
+            value={`${element.status}${element.student}`}
             onChange={(e) => handleSelectChange(e)}
             aria-label="attendance"
           >
-            <option value={"1" + `${element.student}`}>Present</option>
-            <option value={"2" + `${element.student}`}>Absent</option>
-            <option value={"3" + `${element.student}`}>Late</option>
-            <option value={"4" + `${element.student}`}>
+            <option value={`1${element.student}`}>Present</option>
+            <option value={`2${element.student}`}>Absent</option>
+            <option value={`3${element.student}`}>Late</option>
+            <option value={`4${element.student}`}>
               Absent with Valid Reason
             </option>
           </select>
@@ -187,14 +171,12 @@ export const NamelistTable = () => {
       setDatatable((prevDatatable) => {
         return { ...prevDatatable, rows: addNamelistSelect(datatable.rows) };
       });
-
-      // do whatever you want with value
     }
 
     setDatatable((prevDatatable) => {
       return { ...prevDatatable, rows: addNamelistSelect(datatable.rows) };
     });
-  }, [testing, isEditing]);
+  }, [testing, isEditing, datatable.rows]);
 
   const handleSaveEditAtd = () => {
     //need to push the edited value
@@ -203,14 +185,16 @@ export const NamelistTable = () => {
     let data = new FormData();
     data.append("remarks", `${newRow.remarks}`);
     data.append("status", `${newRow.status}`);
-    data.append("student",`${newRow.student}`);
-    data.append("lab_session",`${parseInt(sessionid.slice(12))}`);
-    
-    AttendanceDataService.patchAttendanceFromID(newRow.id,data).then(
-      async() => {
+    data.append("student", `${newRow.student}`);
+    data.append("lab_session", `${parseInt(sessionid.slice(12))}`);
+
+    AttendanceDataService.patchAttendanceFromID(newRow.id, data).then(
+      async () => {
         //fetch the data
         console.log("inside");
-        let response=await AttendanceDataService.getAttendanceFromSessionId(sessionid);
+        let response = await AttendanceDataService.getAttendanceFromSessionId(
+          sessionid
+        );
         console.log(response.data);
         setDatatable((prevDatatable) => {
           return { ...prevDatatable, rows: response.data };

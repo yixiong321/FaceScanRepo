@@ -46,7 +46,7 @@ const AppProvider = ({ children }) => {
       console.log("fetching lab groups first time");
       fetchLabGroups();
     }
-  }, []);
+  }, [globalLabGroups]);
   useEffect(() => {
     const fetchLabGroups = async () => {
       let response1 = await LabGroupDataService.getLabGroups();

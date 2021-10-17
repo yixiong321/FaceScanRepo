@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import queryString from "query-string";
 import { Container, Spinner } from "react-bootstrap";
 import FaceDetection from "./FaceDetection";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import SessionDataService from "../service/session-http";
 import LabGroupDataService from "../service/lab-group-http";
 import CourseDataService from "../service/course-http";
