@@ -60,7 +60,7 @@ export const LabGrpsTable = () => {
             className="tableBtns"
             value={entry.lab_group_id}
             onClick={(e) => {
-              setSelected(e.target.value);
+              setSelected(e.currentTarget.value);
               setDeleteModal(true);
             }}
           >
@@ -90,7 +90,7 @@ export const LabGrpsTable = () => {
             size="sm"
             value={entry.lab_group_id}
             onClick={(e) => {
-              handleEditLabGrp(e.target.value);
+              handleEditLabGrp(e.currentTarget.value);
             }}
           >
             <FaEdit />
@@ -101,7 +101,7 @@ export const LabGrpsTable = () => {
             className="tableBtns"
             value={entry.lab_group_id}
             onClick={(e) => {
-              setSelected(e.target.value);
+              setSelected(e.currentTarget.value);
               setDeleteModal(true);
             }}
           >
@@ -175,6 +175,7 @@ export const LabGrpsTable = () => {
   const handleChange = (e, index, key) => {
     datatable.rows[index][key] = (
       <MDBInput
+        maxlength={256}
         value={e.target.value}
         onChange={(e) => handleChange(e, index, key)}
       ></MDBInput>

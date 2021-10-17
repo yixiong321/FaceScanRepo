@@ -6,6 +6,7 @@ import AttendanceDataService from "../service/attendance-http";
 import StudentDataService from "../service/student-http";
 import { useParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
+import {FaEdit} from "react-icons/fa";
 
 export const NamelistTable = () => {
   const { sessionid } = useParams();
@@ -23,6 +24,7 @@ export const NamelistTable = () => {
       {
         label: "Student Name",
         field: "student",
+        width: 100,
         attributes: {
           "aria-controls": "DataTable",
           "aria-label": "student",
@@ -50,6 +52,7 @@ export const NamelistTable = () => {
       {
         label: "Remarks",
         field: "remarks",
+        width:150
       },
       {
         label: "Actions",
@@ -82,6 +85,7 @@ export const NamelistTable = () => {
     const handleChange = (e, index, key) => {
       datatable.rows[index][key] = (
         <MDBInput
+          maxlength={256}
           value={e.target.value}
           onChange={(e) => handleChange(e, index, key)}
         ></MDBInput>
@@ -143,7 +147,7 @@ export const NamelistTable = () => {
         element.actions = isEditing ? (
           <div>
             <MDBBtn color="secondary" size="sm" disabled className="tableBtns">
-              Edit
+              <FaEdit />
             </MDBBtn>
           </div>
         ) : (
@@ -154,10 +158,10 @@ export const NamelistTable = () => {
               size="sm"
               value={element.student}
               onClick={(e) => {
-                handleEditAttendance(e.target.value);
+                handleEditAttendance(e.currentTarget.value);
               }}
             >
-              Edit
+              <FaEdit />
             </MDBBtn>
           </div>
         );
