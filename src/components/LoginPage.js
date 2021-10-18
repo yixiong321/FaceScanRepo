@@ -1,12 +1,16 @@
 import { Container, Form, Button, Image } from "react-bootstrap";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import LoginDataService from "../service/login-http";
+import { useGlobalContext } from "./Context";
 
-const LoginPage = ({ setIsAuthorized }) => {
+const LoginPage = () => {
   let history = useHistory();
-  setIsAuthorized(false);
+  const { setIsAuthorized } = useGlobalContext();
 
+  useEffect(() => {
+    return () => setIsAuthorized(false);
+  }, [])
   const initialInfo = useMemo(() => {
     return {
       username: "",
@@ -16,7 +20,6 @@ const LoginPage = ({ setIsAuthorized }) => {
 
   const [info, setInfo] = useState(initialInfo);
   const [errors, setErrors] = useState({});
-  const [auth, setAuth] = useState(false);
 
   const handleChange = (field, value) => {
     setInfo({
@@ -49,8 +52,8 @@ const LoginPage = ({ setIsAuthorized }) => {
       if (refresh && access) {
         window.localStorage.setItem("refresh", refresh);
         window.localStorage.setItem("access", access);
+
         history.push("/home");
-        setIsAuthorized(true);
         setInfo(initialInfo);
       }
     } catch (e) {
@@ -63,8 +66,6 @@ const LoginPage = ({ setIsAuthorized }) => {
     const newErrors = await findFormErrors();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-    } else {
-      setAuth(true);
     }
   };
 

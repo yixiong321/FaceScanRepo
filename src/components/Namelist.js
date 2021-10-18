@@ -6,9 +6,11 @@ import AttendanceDataService from "../service/attendance-http";
 import { useParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { FaEdit } from "react-icons/fa";
+import { useGlobalContext } from "./Context";
 
 export const NamelistTable = () => {
   const { sessionid } = useParams();
+  const { isAdmin } = useGlobalContext();
   const [testing, setTesting] = useState(0);
 
   const [isEditing, setEditing] = useState(false);
@@ -138,7 +140,7 @@ export const NamelistTable = () => {
           <div>
             <MDBBtn
               color="secondary"
-              className="tableBtns"
+              className={`tableBtns ${!isAdmin && "disabled"}`}
               size="sm"
               value={element.student}
               onClick={(e) => {

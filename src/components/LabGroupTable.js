@@ -11,7 +11,7 @@ import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 
 export const LabGrpsTable = () => {
 
-  const { globalLabGroups, setGoFetch, goFetch } =
+  const { globalLabGroups, setGoFetch, goFetch, isAdmin } =
     useGlobalContext();
 
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -82,7 +82,7 @@ export const LabGrpsTable = () => {
           </MDBBtn>{" "}
           <MDBBtn
             color="secondary"
-            className="tableBtns"
+            className={`tableBtns ${!isAdmin && "disabled"}`}
             size="sm"
             value={entry.lab_group_id}
             onClick={(e) => {
@@ -94,7 +94,7 @@ export const LabGrpsTable = () => {
           <MDBBtn
             color="danger"
             size="sm"
-            className="tableBtns"
+            className={`tableBtns ${!isAdmin && "disabled"}`}
             value={entry.lab_group_id}
             onClick={(e) => {
               setSelected(e.currentTarget.value);
