@@ -49,13 +49,15 @@ const FaceDetection = ({ session_id }) => {
       }
     };
     capture();
-  }, [detected, loading]);
+  }, [detected]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      clearTimeout(timeout);
-      setCapturedStatus(initialCapturedStatus);
-    }, 3000);
+    if(!loading){
+      const timeout = setTimeout(() => {
+        clearTimeout(timeout);
+        setCapturedStatus(initialCapturedStatus);
+      }, 4000);
+    }
   }, [loading, initialCapturedStatus]);
 
   const start = async () => {
@@ -86,7 +88,12 @@ const FaceDetection = ({ session_id }) => {
         ).withFaceLandmarks(true);
 
         if (faces) {
-          setDetected(true);
+          if(!loading){
+            setDetected(true);
+          }
+          else{
+            setDetected(false);
+          }
           const dims = matchDimensions(canvas, video, true);
           const resizedResults = resizeResults(faces, dims);
           if (true) {

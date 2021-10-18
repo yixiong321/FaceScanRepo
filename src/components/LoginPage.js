@@ -52,7 +52,6 @@ const LoginPage = () => {
       if (refresh && access) {
         window.localStorage.setItem("refresh", refresh);
         window.localStorage.setItem("access", access);
-
         history.push("/home");
         setInfo(initialInfo);
       }

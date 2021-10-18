@@ -1,10 +1,24 @@
-import { Navbar, Nav, Container, Image } from "react-bootstrap";
+import { Navbar, Nav, Container, Image, Button } from "react-bootstrap";
 import sidebardata from "../data/sidebardata";
 import { useGlobalContext } from "./Context";
+import { useHistory } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const Sidenav = (props) => {
   const { location } = props;
   const { isAdmin } = useGlobalContext();
+  let history = useHistory()
+  const [logout, setLogout] = useState(false)
+
+  useEffect(() => {
+    if(logout){
+      history.push("/")
+      window.localStorage.removeItem("access")
+      window.localStorage.removeItem("refresh");
+      setLogout(false)
+    }
+  }, [logout])
+
   return (
     <Navbar fixed="top">
       <Container className="flex-column">
@@ -45,6 +59,9 @@ const Sidenav = (props) => {
             );
           })}
         </Nav>
+        <Button variant="danger" onClick={() => {
+          setLogout(true);
+        }}>Logout</Button>
       </Container>
     </Navbar>
   );

@@ -2,7 +2,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect,
 } from "react-router-dom";
 import { withRouter } from "react-router";
 import LoginPage from "./components/LoginPage";
@@ -14,6 +13,7 @@ import ManageStudentProfile from "./components/ManageStudentProfile";
 import AttendanceTaking from "./components/AttendanceTaking";
 import { NamelistTable } from "./components/Namelist";
 import { useGlobalContext } from "./components/Context";
+import ErrorPage from "./components/ErrorPage";
 import { Col, Row } from "react-bootstrap";
 import { Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -24,6 +24,7 @@ import { useEffect } from "react";
 
 function App() {
   const NavbarWithRouter = withRouter(Navbar);
+
   const { isAuthorized, setIsAuthorized, isAdmin, setIsAdmin } =
     useGlobalContext();
 
@@ -31,21 +32,17 @@ function App() {
     useEffect(() => {
       const checkIsAdmin = async () => {
         const access = window.localStorage.getItem("access");
-
         if (access) {
           setIsAuthorized(true);
-        }
-        const { user_id } = jwt_decode(access);
-        const {
-          data: { is_superuser },
-        } = await TADataService.getAdminById(user_id);
-
-        if (is_superuser) {
-          setIsAdmin(true);
+          const { user_id } = jwt_decode(access);
+          const {
+            data: { is_superuser },
+          } = await TADataService.getAdminById(user_id);
+          setIsAdmin(is_superuser);
         }
       };
       checkIsAdmin();
-    }, [setIsAuthorized, setIsAdmin]);
+    }, []);
 
     return isAuthorized ? (
       isAdmin ? (
@@ -71,9 +68,7 @@ function App() {
                   path="/attendance/:sessionid/:labGrp"
                   component={NamelistTable}
                 />
-                <Route path="*">
-                  <Redirect to="/home" />
-                </Route>
+                <Route path="*" component={ErrorPage} />
               </Switch>
             </Col>
           </Row>
@@ -92,9 +87,7 @@ function App() {
                   path="/attendance/:sessionid/:labGrp"
                   component={NamelistTable}
                 />
-                <Route path="*">
-                  <Redirect to="/home" />
-                </Route>
+                <Route path="*" component={ErrorPage} />
               </Switch>
             </Col>
           </Row>
@@ -110,7 +103,6 @@ function App() {
       <Switch>
         <Route exact path="/" component={LoginPage} />
         <Route component={AdminRoutes} />
-        <Route path="*" component={LoginPage} />
       </Switch>
     </Router>
   );

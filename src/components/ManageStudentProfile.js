@@ -294,7 +294,10 @@ const ManageStudentProfile = () => {
                         type="submit"
                         variant="danger"
                         className="w-50 mx-3"
-                        onClick={(e) => setDeleteProfile(true)}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          setDeleteProfile(true)
+                        }}
                       >
                         Delete
                       </Button>
