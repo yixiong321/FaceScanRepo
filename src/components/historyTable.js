@@ -9,7 +9,7 @@ import { useGlobalContext } from "./Context";
 const addHistoryButtons = (data) => {
   data.forEach(function (element) {
     element.btns = (
-      <Link to={`attendance/lab_session=${element.id}/${element.labGrp}`}>
+      <Link to={`attendance/lab_session=${element.id}/${element.labGrp}/${element.lab_grp_id}`}>
         <MDBBtn color="info" size="sm">
           <AiFillFolderOpen></AiFillFolderOpen>
         </MDBBtn>
@@ -23,6 +23,7 @@ const formatSessionData = (labGroupData, sessionData) => {
   for (let x = 0; x < sessionData.length; x++) {
     for (let i = 0; i < labGroupData.length; i++) {
       if (labGroupData[i].lab_group_id === sessionData[x].lab_group) {
+        let lab_grp_id = labGroupData[i].lab_group_id
         let labGrp = labGroupData[i].lab_group_name;
         let id = sessionData[x].id;
         let session_name = sessionData[x].session_name;
@@ -34,6 +35,7 @@ const formatSessionData = (labGroupData, sessionData) => {
           date_time_start,
           date_time_end,
           labGrp,
+          lab_grp_id
         };
         newList.push(newObj);
       }
@@ -55,7 +57,7 @@ export const HistoryTable = () => {
   const [datatable, setDatatable] = useState({
     columns: [
       {
-        label: "ID",
+        label: " Session ID",
         field: "id",
         width: 150,
         attributes: {
@@ -71,6 +73,11 @@ export const HistoryTable = () => {
       {
         label: "Lab Group",
         field: "labGrp",
+        width: 150,
+      },
+      {
+        label: "Lab Group ID",
+        field: "lab_grp_id",
         width: 150,
       },
       {

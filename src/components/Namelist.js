@@ -7,9 +7,10 @@ import { useParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { FaEdit } from "react-icons/fa";
 import { useGlobalContext } from "./Context";
+import StudentDataService from "../service/student-http";
 
 export const NamelistTable = () => {
-  const { sessionid } = useParams();
+  const { sessionid , lab_grp_id } = useParams();
   const { isAdmin } = useGlobalContext();
   const [testing, setTesting] = useState(0);
 
@@ -20,13 +21,18 @@ export const NamelistTable = () => {
   const [datatable, setDatatable] = useState({
     columns: [
       {
-        label: "Student Name",
+        label: "Student ID",
         field: "student",
         width: 100,
         attributes: {
           "aria-controls": "DataTable",
           "aria-label": "student",
         },
+      },
+      {
+        label: "Student Name",
+        field: "student_name",
+        width: 100,
       },
       {
         label: "Matric Number",
@@ -51,13 +57,25 @@ export const NamelistTable = () => {
     rows: [],
   });
 
+
   useEffect(() => {
     let isSubscribed = true;
+    const getName = async(array) => {
+      for (let i = 0; i < array.length; i++) {
+        let s = await StudentDataService.getStudentByID(array[i].student)
+        array[i].student_name = s.data.name
+        array[i].matric_number = s.data.matric
+      }
+      return array
+    }
+
     AttendanceDataService.getAttendanceFromSessionId(sessionid).then(
-      (response) => {
+      async(response) => {
         if (isSubscribed) {
-          const x = response.data;
-          setDatatable((prevDatatable) => {
+          //console.log(response.data)
+          const x = await getName(response.data);
+          //console.log(x)
+           setDatatable((prevDatatable) => {
             return { ...prevDatatable, rows: x };
           });
           let y = testing + 1;
@@ -66,13 +84,14 @@ export const NamelistTable = () => {
       }
     );
     return () => (isSubscribed = false);
-  }, [sessionid, testing]);
+  }, [sessionid]);
+
 
   useEffect(() => {
     const handleChange = (e, index, key) => {
       datatable.rows[index][key] = (
         <MDBInput
-          maxlength={256}
+          maxLength={256}
           value={e.target.value}
           onChange={(e) => handleChange(e, index, key)}
         ></MDBInput>
@@ -158,9 +177,9 @@ export const NamelistTable = () => {
       var selectElement = event.target;
       var value = selectElement.value;
       let studentid = value.slice(1);
-      console.log(studentid);
+      //console.log(studentid);
       let stat = value[0];
-      console.log(stat);
+      //console.log(stat);
 
       let toEditIndex = datatable.rows.findIndex(
         (row) => row.student == studentid
@@ -180,6 +199,7 @@ export const NamelistTable = () => {
     });
   }, [testing, isEditing, datatable.rows]);
 
+
   const handleSaveEditAtd = () => {
     //need to push the edited value
     // changing data modified,edited remark and status
@@ -193,14 +213,22 @@ export const NamelistTable = () => {
     AttendanceDataService.patchAttendanceFromID(newRow.id, data).then(
       async () => {
         //fetch the data
-        console.log("inside");
+        //console.log("inside");
         let response = await AttendanceDataService.getAttendanceFromSessionId(
           sessionid
         );
-        console.log(response.data);
+        let array = response.data
+        for (let i = 0; i < array.length; i++) {
+          let s = await StudentDataService.getStudentByID(array[i].student)
+          array[i].student_name = s.data.name
+          array[i].matric_number = s.data.matric
+        }
+        
         setDatatable((prevDatatable) => {
-          return { ...prevDatatable, rows: response.data };
+          return { ...prevDatatable, rows: array };
         });
+        let select = document.getElementById(datatable.rows[editIndex].student);
+        select.setAttribute("disabled", "disabled");
         setEditing(false);
       }
     );

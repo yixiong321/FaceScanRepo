@@ -24,10 +24,9 @@ import { useEffect } from "react";
 
 function App() {
   const NavbarWithRouter = withRouter(Navbar);
-
   const { isAuthorized, setIsAuthorized, isAdmin, setIsAdmin } =
-    useGlobalContext();
-
+  useGlobalContext();
+  
   const AdminRoutes = () => {
     useEffect(() => {
       const checkIsAdmin = async () => {
@@ -84,7 +83,7 @@ function App() {
                 <Route exact path="/home" component={HomePage} />
                 <Route path="/session" component={AttendanceTaking} />
                 <Route
-                  path="/attendance/:sessionid/:labGrp"
+                  path="/attendance/:sessionid/:labGrp/:lab_grp_id"
                   component={NamelistTable}
                 />
                 <Route path="*" component={ErrorPage} />

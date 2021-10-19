@@ -170,7 +170,7 @@ export const LabGrpsTable = () => {
   const handleChange = (e, index, key) => {
     datatable.rows[index][key] = (
       <MDBInput
-        maxlength={256}
+        maxLength={256}
         value={e.target.value}
         onChange={(e) => handleChange(e, index, key)}
       ></MDBInput>
