@@ -52,8 +52,8 @@ const LoginPage = () => {
       if (refresh && access) {
         window.localStorage.setItem("refresh", refresh);
         window.localStorage.setItem("access", access);
-        history.push("/home");
         setInfo(initialInfo);
+        history.push("/home");
       }
     } catch (e) {
       return e.response?.data;
@@ -89,6 +89,7 @@ const LoginPage = () => {
               value={info.username}
               onChange={(e) => handleChange("username", e.target.value)}
               isInvalid={!!errors.username}
+              data-testid="login-page-username"
             />
             <Form.Control.Feedback type="invalid">
               {errors.username}
@@ -104,12 +105,13 @@ const LoginPage = () => {
               isInvalid={!!errors.password}
               aria-describedby="passwordHelpBlock"
               className="mb-0"
+              data-testid="login-page-password"
             />
             <Form.Control.Feedback type="invalid" className="pt-3">
               {errors.password}
             </Form.Control.Feedback>
           </Form.Group>
-          <Button variant="primary" type="submit" className="my-3 w-100">
+          <Button variant="primary" type="submit" className="my-3 w-100" data-testid="login-page-button">
             Login
           </Button>
         </Form>

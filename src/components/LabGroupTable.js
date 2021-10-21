@@ -20,7 +20,7 @@ export const LabGrpsTable = () => {
   const [editIndex, setEditIndex] = useState(0);
   const [editRow, setEditRow] = useState({});
   const [newRow, setNewRow] = useState({});
-  const [labGroups, setLabGroups] = useState([...globalLabGroups]);
+  const [labGroups, setLabGroups] = useState([...globalLabGroups] || []);
   const [startSession, setStartSession] = useState(false);
   const sessionData = {
     course: 0,
