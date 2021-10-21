@@ -9,7 +9,47 @@ import Wrapper from "../custom-render";
 import LoginPage from "../components/LoginPage";
 import mockAxios from "../__mocks__/axios";
 
+jest.mock("axios");
+global.window = { location: { pathname: null } };
+
 describe("LoginPage", () => {
+  beforeEach(() => {
+    mockAxios.get.mockImplementation((url) => {
+      switch (url) {
+        case "/group/":
+          return Promise.resolve({
+            data: [
+              {
+                id: 1,
+                lab_group_name: "CS1",
+                course: 1,
+              },
+            ],
+          });
+        case "/course/":
+          return Promise.resolve({
+            data: [
+              {
+                id: 1,
+                course_code: "CZ3001",
+                course_name: "Software Engineering",
+              },
+            ],
+          });
+      }
+    });
+    mockAxios.post.mockImplementationOnce(() => {
+      Promise.resolve({
+        data: [
+          {
+            username: username.value,
+            password: password.value,
+          },
+        ],
+      });
+    });
+  });
+
   afterEach(() => {
     cleanup();
   });
@@ -30,61 +70,51 @@ describe("LoginPage", () => {
     expect(password.value).toBe("admin123");
   });
 
-  test("press login button", async () => {
-    const { getByTestId } = render(Wrapper(<LoginPage />));
+  test("fetch lab groups", async () => {
+    render(Wrapper(<LoginPage />));
 
-    const button = getByTestId("login-page-button");
+    await waitFor(() => expect(mockAxios.get).toHaveBeenCalledTimes(2));
+    expect(mockAxios.get).toHaveBeenCalledWith("/group/");
+    expect(mockAxios.get).toHaveBeenCalledWith("/course/");
+  });
+
+  test("post credentials", () => {
+    const { getByTestId } = render(Wrapper(<LoginPage />));
+    const login_button = getByTestId("login-button");
     const username = getByTestId("login-page-username");
     const password = getByTestId("login-page-password");
-    global.window = { location: { pathname: null } };
 
     fireEvent.change(username, { target: { value: "admin" } });
     fireEvent.change(password, { target: { value: "admin123" } });
+    fireEvent.submit(login_button);
 
-    mockAxios.get.mockResolvedValueOnce(() => {
-      {
-        data: [
-          {
-            id: 1,
-            lab_group_name: "CS1",
-            course: 1,
-          },
-        ];
-      }
+    expect(mockAxios.post).toHaveBeenCalledTimes(1);
+    expect(mockAxios.post).toHaveBeenCalledWith("/token/", {
+      username: username.value,
+      password: password.value,
     });
-
-    mockAxios.get.mockResolvedValueOnce(() => {
-      {
-        data: [
-          {
-            id: 1,
-            course_code: "CZ3001",
-            course_name: "Software Engineering",
-          },
-        ];
-      }
-    });
-
-    mockAxios.post.mockResolvedValueOnce(() => {
-      {
-        data: [
-          {
-            username: username.value,
-            password: password.value,
-          },
-        ];
-      }
-    });
-
-    jest.spyOn(window.localStorage.__proto__, "setItem");
-    window.localStorage.__proto__.setItem = jest.fn();
-
-    fireEvent.click(button);
-
-    // expect(username.value).toBe("");
-    // expect(password.value).toBe("");
-    await waitFor(() => expect(global.window.location.pathname).toBe("/home"));
   });
 
-  test("error inputs", () => {});
+  test("submit form", async() => {
+    const { getByTestId, queryByTestId } = render(Wrapper(<LoginPage/>));
+
+    const username = getByTestId("login-page-username");
+    const password = getByTestId("login-page-password");
+
+    fireEvent.change(username, { target: { value: "admin" } });
+    fireEvent.change(password, { target: { value: "admin123" } });
+    
+    const login_button = getByTestId("login-button");
+    fireEvent.submit(login_button)
+
+    // const logout_button = getByTestId("login-page-username");
+    // await waitFor(() => expect(getByTestId("logout-button")).toBeInTheDocument())
+    await waitFor(() => expect(queryByTestId("datatable")).toBeTruthy());
+    // await waitFor(() => expect(username.value).toBe(""));
+  });
+
+  // test("error inputs", () => {});
 });
+
+// jest.spyOn(window.localStorage.__proto__, "setItem");
+// window.localStorage.__proto__.setItem = jest.fn();

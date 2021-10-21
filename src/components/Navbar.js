@@ -7,17 +7,17 @@ import { useState, useEffect } from "react";
 const Sidenav = (props) => {
   const { location } = props;
   const { isAdmin } = useGlobalContext();
-  let history = useHistory()
-  const [logout, setLogout] = useState(false)
+  let history = useHistory();
+  const [logout, setLogout] = useState(false);
 
   useEffect(() => {
-    if(logout){
-      history.push("/")
-      window.localStorage.removeItem("access")
+    if (logout) {
+      history.push("/");
+      window.localStorage.removeItem("access");
       window.localStorage.removeItem("refresh");
-      setLogout(false)
+      setLogout(false);
     }
-  }, [logout])
+  }, [logout]);
 
   return (
     <Navbar fixed="top">
@@ -59,9 +59,14 @@ const Sidenav = (props) => {
             );
           })}
         </Nav>
-        <Button variant="danger" onClick={() => {
-          setLogout(true);
-        }}>Logout</Button>
+        <Button
+          variant="danger"
+          onClick={() => {
+            setLogout(true);
+          }}
+        >
+          Logout
+        </Button>
       </Container>
     </Navbar>
   );

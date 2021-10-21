@@ -1,17 +1,5 @@
-// const mockAxios = {
-//   create: jest.fn(() => mockAxios),
-//   get: jest.fn(() => Promise.resolve({ data: {} })),
-//   post: jest.fn(() => Promise.resolve({ data: {} })),
-// };
+const mockAxios = jest.genMockFromModule('axios')
 
-const mockAxios = {
-  create: jest.fn(() => mockAxios),
-  get: jest.fn().mockResolvedValue({ data: {} }),
-  post: jest.fn().mockResolvedValue({ data: {} }),
-  interceptors: {
-    request: { use: jest.fn(), eject: jest.fn() },
-    response: { use: jest.fn(), eject: jest.fn() },
-  },
-}
+mockAxios.create = jest.fn(() => mockAxios)
 
-export default mockAxios;
+export default mockAxios

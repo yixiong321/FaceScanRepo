@@ -111,7 +111,7 @@ const LoginPage = () => {
               {errors.password}
             </Form.Control.Feedback>
           </Form.Group>
-          <Button variant="primary" type="submit" className="my-3 w-100" data-testid="login-page-button">
+          <Button variant="primary" type="submit" className="my-3 w-100" data-testid="login-button">
             Login
           </Button>
         </Form>
