@@ -3,6 +3,8 @@ import {
   fireEvent,
   cleanup,
   waitFor,
+  within,
+  screen
 } from "@testing-library/react";
 import Wrapper from "../custom-render";
 import LoginPage from "../components/LoginPage";
@@ -93,13 +95,15 @@ describe("LoginPage", () => {
       password: password.value,
     });
   });
-  
-  test("invalid username/password", () => {
+
+  test("invalid username/password", async () => {
     mockAxios.post.mockImplementationOnce(() => {
       Promise.reject({
-        data: ["hi"],
+        data: { detail: "No active account found with the given credentials" },
       });
     });
+
+    const { getByTestId } = render(Wrapper(<LoginPage />));
 
     const login_button = getByTestId("login-button");
     const username = getByTestId("login-page-username");
@@ -110,11 +114,12 @@ describe("LoginPage", () => {
     fireEvent.change(password, { target: { value: "admin12" } });
     fireEvent.click(login_button);
 
-    // expect(error).toBe("hi")
+    // const { getByText } = within(getByTestId('login-error-message'))
 
+    expect(mockAxios.post).toHaveBeenCalledTimes(1);
 
-    // console.log(error)
-
-    // expect(error.value).toBe("hi");
+    await waitFor(() =>
+      expect(getByText("No active account found with the given credentials")).toBeInTheDocument()
+    );
   });
 });

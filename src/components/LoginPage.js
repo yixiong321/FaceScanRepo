@@ -78,6 +78,7 @@ const LoginPage = () => {
         <Form
           className="form-box d-flex flex-column justify-content-center p-4 w-100 h-100"
           onSubmit={handleSubmit}
+          data-testid="login-form"
         >
           <h4 className="mb-4">Login to Dashboard</h4>
           <Form.Group className="mb-3" controlId="username">
