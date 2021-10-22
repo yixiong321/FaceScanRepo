@@ -4,12 +4,12 @@ import {
   cleanup,
   waitFor,
   within,
-  screen
+  screen,
 } from "@testing-library/react";
 import Wrapper from "../custom-render";
 import LoginPage from "../components/LoginPage";
 import mockAxios from "../__mocks__/axios";
-import LoginDataService from "../service/login-http"
+import LoginDataService from "../service/login-http";
 
 jest.mock("axios");
 
@@ -61,7 +61,7 @@ describe("LoginPage", () => {
     expect(password.value).toBe("admin123");
   });
 
-  test("fetch lab groups", async () => {
+  test("initialization", async () => {
     render(Wrapper(<LoginPage />));
 
     await waitFor(() => expect(mockAxios.get).toHaveBeenCalledTimes(2));
@@ -69,17 +69,17 @@ describe("LoginPage", () => {
     expect(mockAxios.get).toHaveBeenCalledWith("/course/");
   });
 
-  test("submit form and post credentials", async () => {
-      mockAxios.post.mockImplementationOnce(() => {
-        Promise.resolve({
-          data: [
-            {
-              username: username.value,
-              password: password.value,
-            },
-          ],
-        });
+  test("successful login", async () => {
+    mockAxios.post.mockImplementationOnce(() => {
+      Promise.resolve({
+        data: [
+          {
+            username: username.value,
+            password: password.value,
+          },
+        ],
       });
+    });
     const { getByTestId } = render(Wrapper(<LoginPage />));
 
     const username = getByTestId("login-page-username");
@@ -97,28 +97,80 @@ describe("LoginPage", () => {
     });
   });
 
-  test("invalid username/password", async () => {
-
-    //mockAxios.post.mockResolvedValueOnce({data:{detail: "No active account found with the given credentials"}})
-    mockAxios.post.mockRejectedValueOnce(new Error(JSON.stringify({data:{detail: "No active account found with the given credentials"}})))
+  test("invalid username", async () => {
+    mockAxios.post.mockRejectedValue(
+      new Error(
+        JSON.stringify({
+          data: {
+            detail: "No active account found with the given credentials",
+          },
+        })
+      )
+    );
     const { getByTestId } = render(Wrapper(<LoginPage />));
 
-    const login_button = getByTestId("login-button");
     const username = getByTestId("login-page-username");
     const password = getByTestId("login-page-password");
-    
-    fireEvent.change(username, { target: { value: "admin" } });
-    //wrong password
-    fireEvent.change(password, { target: { value: "admin12" } });
-    //fireEvent.click(login_button);
-    try{
-      const response = await LoginDataService.postToken({username: username.value, password: password.value})
-    }catch(e){
-      console.log(e)
-      expect(e.toString()).toMatch(JSON.stringify({data:{detail: "No active account found with the given credentials"}}))
-    }
-    
-    expect(mockAxios.post).toHaveBeenCalledTimes(1);
 
+    fireEvent.change(username, { target: { value: "admindoesnotexist" } });
+    //invalid username
+    fireEvent.change(password, { target: { value: "admin123" } });
+    try {
+      LoginDataService.postToken({
+        username: username.value,
+        password: password.value,
+      });
+    } catch (e) {
+      expect(e.toString()).toMatch(
+        JSON.stringify({
+          data: {
+            detail: "No active account found with the given credentials",
+          },
+        })
+      );
+    }
+
+    expect(mockAxios.post).toHaveBeenCalledTimes(1);
   });
+
+  test("invalid password", async () => {
+    mockAxios.post.mockRejectedValue(
+      new Error(
+        JSON.stringify({
+          data: {
+            detail: "No active account found with the given credentials",
+          },
+        })
+      )
+    );
+    const { getByTestId } = render(Wrapper(<LoginPage />));
+
+    const username = getByTestId("login-page-username");
+    const password = getByTestId("login-page-password");
+
+    fireEvent.change(username, { target: { value: "admin" } });
+    //invalid password
+    fireEvent.change(password, { target: { value: "admin12" } });
+    try {
+      LoginDataService.postToken({
+        username: username.value,
+        password: password.value,
+      });
+    } catch (e) {
+      expect(e.toString()).toMatch(
+        JSON.stringify({
+          data: {
+            detail: "No active account found with the given credentials",
+          },
+        })
+      );
+    }
+
+    expect(mockAxios.post).toHaveBeenCalledTimes(1);
+  });
+
+  test('admin ui', () => {
+    
+  })
+
 });
