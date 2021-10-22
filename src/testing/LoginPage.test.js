@@ -9,6 +9,7 @@ import {
 import Wrapper from "../custom-render";
 import LoginPage from "../components/LoginPage";
 import mockAxios from "../__mocks__/axios";
+import LoginDataService from "../service/login-http"
 
 jest.mock("axios");
 
@@ -69,16 +70,16 @@ describe("LoginPage", () => {
   });
 
   test("submit form and post credentials", async () => {
-    mockAxios.post.mockImplementationOnce(() => {
-      Promise.resolve({
-        data: [
-          {
-            username: username.value,
-            password: password.value,
-          },
-        ],
+      mockAxios.post.mockImplementationOnce(() => {
+        Promise.resolve({
+          data: [
+            {
+              username: username.value,
+              password: password.value,
+            },
+          ],
+        });
       });
-    });
     const { getByTestId } = render(Wrapper(<LoginPage />));
 
     const username = getByTestId("login-page-username");
@@ -97,29 +98,27 @@ describe("LoginPage", () => {
   });
 
   test("invalid username/password", async () => {
-    mockAxios.post.mockImplementationOnce(() => {
-      Promise.reject({
-        data: { detail: "No active account found with the given credentials" },
-      });
-    });
 
+    //mockAxios.post.mockResolvedValueOnce({data:{detail: "No active account found with the given credentials"}})
+    mockAxios.post.mockRejectedValueOnce(new Error(JSON.stringify({data:{detail: "No active account found with the given credentials"}})))
     const { getByTestId } = render(Wrapper(<LoginPage />));
 
     const login_button = getByTestId("login-button");
     const username = getByTestId("login-page-username");
     const password = getByTestId("login-page-password");
-
+    
     fireEvent.change(username, { target: { value: "admin" } });
     //wrong password
     fireEvent.change(password, { target: { value: "admin12" } });
-    fireEvent.click(login_button);
-
-    // const { getByText } = within(getByTestId('login-error-message'))
-
+    //fireEvent.click(login_button);
+    try{
+      const response = await LoginDataService.postToken({username: username.value, password: password.value})
+    }catch(e){
+      console.log(e)
+      expect(e.toString()).toMatch(JSON.stringify({data:{detail: "No active account found with the given credentials"}}))
+    }
+    
     expect(mockAxios.post).toHaveBeenCalledTimes(1);
 
-    await waitFor(() =>
-      expect(getByText("No active account found with the given credentials")).toBeInTheDocument()
-    );
   });
 });
