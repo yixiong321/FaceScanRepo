@@ -1,6 +1,5 @@
 import {
   render,
-  screen,
   fireEvent,
   cleanup,
   waitFor,
@@ -10,7 +9,6 @@ import LoginPage from "../components/LoginPage";
 import mockAxios from "../__mocks__/axios";
 
 jest.mock("axios");
-global.window = { location: { pathname: null } };
 
 describe("LoginPage", () => {
   beforeEach(() => {
@@ -37,16 +35,6 @@ describe("LoginPage", () => {
             ],
           });
       }
-    });
-    mockAxios.post.mockImplementationOnce(() => {
-      Promise.resolve({
-        data: [
-          {
-            username: username.value,
-            password: password.value,
-          },
-        ],
-      });
     });
   });
 
@@ -78,15 +66,26 @@ describe("LoginPage", () => {
     expect(mockAxios.get).toHaveBeenCalledWith("/course/");
   });
 
-  test("post credentials", () => {
+  test("submit form and post credentials", async () => {
+    mockAxios.post.mockImplementationOnce(() => {
+      Promise.resolve({
+        data: [
+          {
+            username: username.value,
+            password: password.value,
+          },
+        ],
+      });
+    });
     const { getByTestId } = render(Wrapper(<LoginPage />));
-    const login_button = getByTestId("login-button");
+
     const username = getByTestId("login-page-username");
     const password = getByTestId("login-page-password");
+    const login_button = getByTestId("login-button");
 
     fireEvent.change(username, { target: { value: "admin" } });
     fireEvent.change(password, { target: { value: "admin123" } });
-    fireEvent.submit(login_button);
+    fireEvent.click(login_button);
 
     expect(mockAxios.post).toHaveBeenCalledTimes(1);
     expect(mockAxios.post).toHaveBeenCalledWith("/token/", {
@@ -94,27 +93,28 @@ describe("LoginPage", () => {
       password: password.value,
     });
   });
+  
+  test("invalid username/password", () => {
+    mockAxios.post.mockImplementationOnce(() => {
+      Promise.reject({
+        data: ["hi"],
+      });
+    });
 
-  test("submit form", async() => {
-    const { getByTestId, queryByTestId } = render(Wrapper(<LoginPage/>));
-
+    const login_button = getByTestId("login-button");
     const username = getByTestId("login-page-username");
     const password = getByTestId("login-page-password");
 
     fireEvent.change(username, { target: { value: "admin" } });
-    fireEvent.change(password, { target: { value: "admin123" } });
-    
-    const login_button = getByTestId("login-button");
-    fireEvent.submit(login_button)
+    //wrong password
+    fireEvent.change(password, { target: { value: "admin12" } });
+    fireEvent.click(login_button);
 
-    // const logout_button = getByTestId("login-page-username");
-    // await waitFor(() => expect(getByTestId("logout-button")).toBeInTheDocument())
-    await waitFor(() => expect(queryByTestId("datatable")).toBeTruthy());
-    // await waitFor(() => expect(username.value).toBe(""));
+    // expect(error).toBe("hi")
+
+
+    // console.log(error)
+
+    // expect(error.value).toBe("hi");
   });
-
-  // test("error inputs", () => {});
 });
-
-// jest.spyOn(window.localStorage.__proto__, "setItem");
-// window.localStorage.__proto__.setItem = jest.fn();

@@ -69,6 +69,7 @@ export const LabGrpsTable = () => {
             color="primary"
             size="sm"
             className="tableBtns"
+            data-testid="test"
             onClick={(e) => {
               setSession({
                 ...session,

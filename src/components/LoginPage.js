@@ -107,7 +107,7 @@ const LoginPage = () => {
               className="mb-0"
               data-testid="login-page-password"
             />
-            <Form.Control.Feedback type="invalid" className="pt-3">
+            <Form.Control.Feedback type="invalid" className="pt-3" data-testid="login-error-message">
               {errors.password}
             </Form.Control.Feedback>
           </Form.Group>
