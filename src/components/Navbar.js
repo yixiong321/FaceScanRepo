@@ -38,6 +38,7 @@ const Sidenav = (props) => {
                 eventKey={item.link}
                 href={item.link}
                 className={"text-white py-0 sidenav-color"}
+                data-testitem="admin-navbar"
               >
                 {item.icon}
                 {item.name}

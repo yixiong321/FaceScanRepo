@@ -3,8 +3,6 @@ import {
   fireEvent,
   cleanup,
   waitFor,
-  within,
-  screen,
 } from "@testing-library/react";
 import Wrapper from "../custom-render";
 import LoginPage from "../components/LoginPage";
@@ -168,9 +166,4 @@ describe("LoginPage", () => {
 
     expect(mockAxios.post).toHaveBeenCalledTimes(1);
   });
-
-  test('admin ui', () => {
-    
-  })
-
 });
